@@ -1,0 +1,14 @@
+2026-06-05 (DAY 01)
+Context(背景) :
+需要一個高精密和顆粒化的管控方法顯示/proc/stat的資料顯示，防止我們顯示無效區域
+
+Decision(決策) :
+我們能透過Rust File Library和BufReader。
+BufReader+iteration給了我們可以一行一行讀取資料的管理方法，可以隨意控制字串輸出的行式
+但是需要額外一個File::Open才能讀取檔案
+
+read_to_string雖然不用File::Open 但是只能讀取全部內容
+
+
+Consequence(結果) :
+採用了BufReader+iteration的方法 未來可以透過match和設置關鍵字來取得需要的資訊 

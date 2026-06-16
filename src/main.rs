@@ -1,11 +1,11 @@
-use std::fs::File;
-use std::io::{BufRead, BufReader, Write};
 
+
+pub mod cpu;
+pub mod mem;
+pub mod gpu;
+pub mod disk;
+pub mod data_source;
 
 fn main() {
-    let opener = File::open("/proc/stat");
-    let reader = BufReader::new(opener.unwrap());
-    for(index, line) in reader.lines().enumerate(){
-        println!("{}\n", line.unwrap());
-    }
+
 }
