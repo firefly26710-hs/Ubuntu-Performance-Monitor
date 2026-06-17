@@ -16,15 +16,29 @@ use std::io::{BufRead, BufReader};
 
 
 fn read_cpu(public_array:&mut[u8; 769] ){
-    if let Ok(mut file) = File::open("/proc/cpuinfo") {
-        let reader = BufReader::new(file);
-        if let Some(Ok( mut line)) = reader.lines().nth(4){
-            let line_bytes = line.as_bytes();
-            let len = line_bytes.len();
-            public_array[0..len].copy_from_slice(&line_bytes[0..len]);
+    let mut cpu_info_len = 0;
+    if let Ok(cpu_info) = File::open("/proc/cpuinfo") {
+        let info_reader1 = BufReader::new(cpu_info);
+        if let Some(Ok(model_info)) = info_reader1.lines().nth(4){
+            let info_by_bytes = model_info.as_bytes();
+            cpu_info_len = info_by_bytes.len();
+            public_array[0..cpu_info_len].copy_from_slice(&info_by_bytes[0..cpu_info_len]);
             println!("-----------");
-            println!("{}", std::str::from_utf8(&public_array[0..len]).unwrap());
+            println!("{}", std::str::from_utf8(&public_array[0..cpu_info_len]).unwrap());
             println!("-----------");
+        }
+    }
+
+    if let Ok(stat) = File::open("/proc/stat"){
+       let info_reader2 = BufReader::new(stat);
+        for(i, thread) in info_reader2.lines().skip(1).take(12).enumerate(){
+            if let Ok(thread_info) = thread{
+                let mut info_by_bytes = thread_info.as_bytes();
+                let thread_info_len = info_by_bytes.len();
+                let mut offest = 50*(i + 1);
+                let start = cpu_info_len + offest;
+
+            }
         }
     }
 }
