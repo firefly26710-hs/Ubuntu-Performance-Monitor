@@ -16,28 +16,39 @@ use std::io::{BufRead, BufReader};
 
 
 fn read_cpu(public_array:&mut[u8; 769] ){
-    let mut cpu_info_len = 0;
+    let mut name_length = 0;
     if let Ok(cpu_info) = File::open("/proc/cpuinfo") {
-        let info_reader1 = BufReader::new(cpu_info);
-        if let Some(Ok(model_info)) = info_reader1.lines().nth(4){
-            let info_by_bytes = model_info.as_bytes();
-            cpu_info_len = info_by_bytes.len();
-            public_array[0..cpu_info_len].copy_from_slice(&info_by_bytes[0..cpu_info_len]);
+        let cpuinfo_reader = BufReader::new(cpu_info);
+        if let Some(Ok(name_info)) = cpuinfo_reader.lines().nth(4){
+            let name_by_bytes = name_info.as_bytes();
+            name_length = name_by_bytes.len();
+
+            public_array[0..name_length].copy_from_slice(&name_by_bytes[0..name_length]);
+
             println!("-----------");
-            println!("{}", std::str::from_utf8(&public_array[0..cpu_info_len]).unwrap());
+            println!("{}", std::str::from_utf8(&public_array[0..name_length]).unwrap());
             println!("-----------");
         }
     }
 
     if let Ok(stat) = File::open("/proc/stat"){
-       let info_reader2 = BufReader::new(stat);
-        for(i, thread) in info_reader2.lines().skip(1).take(12).enumerate(){
+       let stat_reader = BufReader::new(stat);
+        for(number, thread) in stat_reader.lines().skip(1).take(12).enumerate(){
             if let Ok(thread_info) = thread{
-                let mut info_by_bytes = thread_info.as_bytes();
-                let thread_info_len = info_by_bytes.len();
-                let mut offest = 50*(i + 1);
-                let start = cpu_info_len + offest;
+                let mut thread_by_bytes = thread_info.as_bytes();
+                let thread_length = thread_by_bytes.len();
+                let padding = 50;
+                let offest = number*padding;
+                let start = name_length + offest;
+                let end = start + padding;
 
+                let mut buffer_padding = [0u8; 50];
+                buffer_padding[0..thread_length].copy_from_slice(&thread_by_bytes[0..thread_length]);
+
+                public_array[start..end].copy_from_slice(&buffer_padding);
+                println!("-----------");
+                println!("{}", std::str::from_utf8(&public_array[start..end]).unwrap());
+                println!("-----------");
             }
         }
     }
