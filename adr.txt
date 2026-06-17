@@ -1,14 +1,19 @@
-2026-06-05 (DAY 01)
-Context(­I´º) :
-»İ­n¤@­Ó°ªºë±K©MÁû²É¤ÆªººŞ±±¤èªkÅã¥Ü/proc/statªº¸ê®ÆÅã¥Ü¡A¨¾¤î§Ú­ÌÅã¥ÜµL®Ä°Ï°ì
-
-Decision(¨Mµ¦) :
-§Ú­Ì¯à³z¹LRust File Library©MBufReader¡C
-BufReader+iterationµ¹¤F§Ú­Ì¥i¥H¤@¦æ¤@¦æÅª¨ú¸ê®ÆªººŞ²z¤èªk¡A¥i¥HÀH·N±±¨î¦r¦ê¿é¥Xªº¦æ¦¡
-¦ı¬O»İ­nÃB¥~¤@­ÓFile::Open¤~¯àÅª¨úÀÉ®×
-
-read_to_stringÁöµM¤£¥ÎFile::Open ¦ı¬O¥u¯àÅª¨ú¥ş³¡¤º®e
+2026-04-10 (DAY 19)
+Context(èƒŒæ™¯) :
 
 
-Consequence(µ²ªG) :
-±Ä¥Î¤FBufReader+iterationªº¤èªk ¥¼¨Ó¥i¥H³z¹Lmatch©M³]¸mÃöÁä¦r¨Ó¨ú±o»İ­nªº¸ê°T 
+
+
+Decision(æ±ºç­–) :
+æˆ‘é¦–å…ˆæƒ³åˆ°ç”¨DayOfWeek ä½†åˆç™¼ç¾é‚„è¦çŸ¥é“ç¢ºåˆ‡å“ªä¸€å‘¨çš„ å› æ­¤å¼•å…¥currentWeekä¾†åšæ›´è©³ç´°çš„ç´¢å¼• å› ç‚ºå¦‚æœä¸ç”¨currentWeeké‚£éº¼æˆ‘å€‘å¯èƒ½æœƒæŠŠæ¯å€‹æœˆçš„4å€‹å‘¨ä¸€éƒ½æå–å‡ºä¾†xx
+
+Consequence(çµæœ) :  å¦‚æœæˆ‘å€‘é‚„æƒ³å»ä»¥æœˆç‚ºå–®ä½æŸ¥è©¢ èƒ½å¤ å†åŠ å€‹monthå»åšæ›´è©³ç´°çš„ç´¢å¼• ç„¶å¾Œé›–ç„¶é€™appæ²’æœ‰è®“ä½ å¯ä»¥æŸ¥ä¸Šå‘¨çš„è³‡æ–™åŠŸèƒ½ ä½†æˆ‘å€‘èƒ½é€écurrentWeek - 1å»åšå¯¦ç¾
+Context(èƒŒæ™¯) :
+I stared to define what the Dao we need
+This will affect the complexity of managing data transmission(è³‡æ–™å‚³è¼¸)
+This is the first thing should be done
+Decision(æ±ºç­–) :
+RecorderDao :
+BudgetDao :
+DashBoardDao :
+Consequence(çµæœ) :
