@@ -1,6 +1,7 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::str::from_utf8;
+use nix::sys::statvfs::statvfs;
 //use crate::cpu::logic as cpu_logic;
 //use crate::mem::logic as mem_logic;
 //use crate::gpu::logic as gpu_logic;
@@ -33,10 +34,10 @@ fn read_cpu(public_array:&mut[u8; 769] ){
     }
 
     if let Ok(stat) = File::open("/proc/stat"){
-       let stat_reader = BufReader::new(stat);
+        let stat_reader = BufReader::new(stat);
         for(number, thread) in stat_reader.lines().skip(1).take(12).enumerate(){
             if let Ok(thread_info) = thread{
-                let mut thread_as_bytes = thread_info.as_bytes();
+                let thread_as_bytes = thread_info.as_bytes();
                 let thread_length = thread_as_bytes.len();
                 let padding = 50;
                 let offest = number*padding;
@@ -89,15 +90,37 @@ fn read_mem(public_array:&mut[u8; 769]){
     }
 }
 
-//fn read_gpu(){}
 
-//fn read_disk(){}
-    //直接看main部分
+
+fn read_disk(public_array:&mut[u8; 769]){
+    let path = "/";
+    if let Ok( statvfs )= statvfs(path){
+        let f_frsize = statvfs.fragment_size();
+        let f_blocks = statvfs.blocks();
+        let f_bavail = statvfs.blocks_available();
+
+        let total = f_blocks * f_frsize;
+        let avail = f_bavail * f_frsize;
+
+        let total_as_bytes = total.to_be_bytes();
+        let avail_as_bytes = avail.to_be_bytes();
+
+        public_array[0..8].copy_from_slice(&total_as_bytes);
+        public_array[8..16].copy_from_slice(&avail_as_bytes);
+
+        println!("-----------");
+        println!("{}", u64::from_be_bytes(public_array[0..8].try_into().unwrap()));
+        println!("{}", u64::from_be_bytes(public_array[8..16].try_into().unwrap()));
+        println!("-----------");
+
+    }
+
+}
 
 
 
 #[test]
 fn test_proc_reading() { // file reading exp
     let mut public_array:[u8; 769] = [0; 769];
-    read_mem(&mut public_array);
+    read_disk(&mut public_array);
 }

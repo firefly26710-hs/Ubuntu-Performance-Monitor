@@ -1,7 +1,5 @@
-use std::fs::File;
+use nix::sys::statvfs::statvfs;
 use std::io::{BufRead, BufReader};
-use nix::libc::__u8;
-
 pub mod cpu;
 pub mod mem;
 pub mod gpu;
@@ -20,7 +18,7 @@ pub struct DiskMetrics {
 // 2. 核心提取函數
 fn get_disk_usage() -> Result<DiskMetrics, nix::Error> {
     // 💥 這裡改用絕對路徑呼叫，直接破除 scope 詛咒！
-    let stats = nix::sys::statvfs::statvfs("/")?;
+    let stats = statvfs("/")?;
 
     // 取得物理數值（注意：有些 nix 版本函數名是 f_frsize() 或 fragment_size()）
     // 這裡我們直接用 nix 標準的 method 呼叫：
