@@ -1,8 +1,11 @@
 use std::fs::File;
-use std::io::BufReader;
+use std::io::{BufRead, BufReader};
 use std::str::from_utf8;
+use crate::data_source::data::{DataSource, PADDING_SIZE};
 
-pub fn read_mem(source:&mut DataSource) {
+const TOTAL_MEMORY_INFO:usize = 0;
+const AVAILABLE_MEMORY_INFO:usize = 2;
+pub fn read_mem_info(source:&mut DataSource) {
     let data_source = &mut source.public_array;
     if let Ok(meminfo_file) = File::open("/proc/meminfo") {
         let meminfo_reader = BufReader::new(meminfo_file);
@@ -14,10 +17,10 @@ pub fn read_mem(source:&mut DataSource) {
                 buffer_padding[0..actual_length].copy_from_slice(&byte_char[0..actual_length]);
                 match number {
                     TOTAL_MEMORY_INFO
-                    => self.public_array[0..PADDING_SIZE].copy_from_slice(&buffer_padding),
+                    => data_source[0..PADDING_SIZE].copy_from_slice(&buffer_padding),
 
                     AVAILABLE_MEMORY_INFO
-                    => self.public_array[PADDING_SIZE..2 * PADDING_SIZE].copy_from_slice(&buffer_padding),
+                    => data_source[PADDING_SIZE..2 * PADDING_SIZE].copy_from_slice(&buffer_padding),
 
                     _
                     => {}
@@ -26,12 +29,12 @@ pub fn read_mem(source:&mut DataSource) {
                 match number {
                     0 => {
                         println!("-----------");
-                        println!("{}\n", from_utf8(&self.public_array[0..PADDING_SIZE]).unwrap());
+                        println!("{}", from_utf8(&data_source[0..PADDING_SIZE]).unwrap());
                         println!("-----------");
                     },
                     2 => {
                         println!("-----------");
-                        println!("{}\n", from_utf8(&self.public_array[PADDING_SIZE..2 * PADDING_SIZE]).unwrap());
+                        println!("{}", from_utf8(&data_source[PADDING_SIZE..2 * PADDING_SIZE]).unwrap());
                         println!("-----------");
                     },
                     _ => {}

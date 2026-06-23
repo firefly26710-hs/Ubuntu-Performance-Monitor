@@ -29,8 +29,7 @@ pub const HALF_SIZE:usize = PADDING_SIZE / 2;
 pub const PADDING_NUMBER:usize = 13;
 pub const MAX_PUBLIC_ARRAY_SIZE:usize = PADDING_NUMBER * PADDING_SIZE;
 
-const TOTAL_MEMORY_INFO:usize = 0;
-const AVAILABLE_MEMORY_INFO:usize = 2;
+
 
 
 
@@ -46,81 +45,5 @@ impl DataSource {
         Self{public_array: [0; MAX_PUBLIC_ARRAY_SIZE]}
     }
 
-
-
-    pub fn read_mem(&mut self) {
-        if let Ok(meminfo_file) = File::open("/proc/meminfo") {
-            let meminfo_reader = BufReader::new(meminfo_file);
-            for (number, info) in meminfo_reader.lines().take(3).enumerate() {
-                if let Ok(info) = info {
-                    let actual_length = info.len();
-                    let byte_char = info.as_bytes();
-                    let mut buffer_padding = [0u8; PADDING_SIZE];
-                    buffer_padding[0..actual_length].copy_from_slice(&byte_char[0..actual_length]);
-                    match number {
-                        TOTAL_MEMORY_INFO
-                        => self.public_array[0..PADDING_SIZE].copy_from_slice(&buffer_padding),
-
-                        AVAILABLE_MEMORY_INFO
-                        => self.public_array[PADDING_SIZE..2 * PADDING_SIZE].copy_from_slice(&buffer_padding),
-
-                        _
-                        => {}
-                    }
-
-                    match number {
-                        0 => {
-                            println!("-----------");
-                            println!("{}\n", from_utf8(&self.public_array[0..PADDING_SIZE]).unwrap());
-                            println!("-----------");
-                        },
-                        2 => {
-                            println!("-----------");
-                            println!("{}\n", from_utf8(&self.public_array[PADDING_SIZE..2 * PADDING_SIZE]).unwrap());
-                            println!("-----------");
-                        },
-                        _ => {}
-                    }
-                }
-            }
-        }
-    }
-
-
-    pub fn read_disk(&mut self) {
-        let path = "/";
-        if let Ok(statvfs) = statvfs(path) {
-            let f_frsize = statvfs.fragment_size();
-            let f_blocks = statvfs.blocks();
-            let f_bavail = statvfs.blocks_available();
-
-            let disk_total = f_blocks * f_frsize;
-            let disk_avail = f_bavail * f_frsize;
-
-
-            let total_byte_char = disk_total.to_be_bytes();
-            let avail_byte_char = disk_avail.to_be_bytes();
-
-            let len_total = total_byte_char.len();
-            let len_avail = avail_byte_char.len();
-
-            let mut buffer_array = [0u8; PADDING_SIZE];
-
-            buffer_array[0..len_avail].copy_from_slice(&avail_byte_char[0..len_avail]);
-            self.public_array[PADDING_SIZE..2 * PADDING_SIZE].copy_from_slice(&buffer_array[0..PADDING_SIZE]);
-
-            buffer_array[0..len_total].copy_from_slice(&total_byte_char[0..len_total]);
-            self.public_array[0..PADDING_SIZE].copy_from_slice(&buffer_array[0..PADDING_SIZE]);
-
-            let total_restored = u64::from_be_bytes(self.public_array[0..8].try_into().unwrap());
-            let avail_restored = u64::from_be_bytes(self.public_array[PADDING_SIZE..PADDING_SIZE + 8].try_into().unwrap());
-            println!("-----------");
-            println!("Total: {}", total_restored);
-            println!("Avail: {}", avail_restored);
-            println!("-----------");
-
-        }
-
-    }
 }
 
