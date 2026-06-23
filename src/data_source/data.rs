@@ -24,9 +24,10 @@ use nix::sys::statvfs::statvfs;
 
 
 
-const PADDING_SIZE:usize = 64;
-const MAX_PUBLIC_ARRAY_SIZE:usize = PADDING_SIZE*13;
-const THREAD_START:usize = 64;
+pub const PADDING_SIZE:usize = 64;
+pub const PADDING_NUMBER:usize = 13;
+const MAX_PUBLIC_ARRAY_SIZE:usize = PADDING_NUMBER * PADDING_SIZE;
+const THREAD_START:usize = PADDING_SIZE;
 const THREAD_NUMBER:usize = 12;
 const TOTAL_MEMORY_INFO:usize = 0;
 const AVAILABLE_MEMORY_INFO:usize = 2;
@@ -37,10 +38,10 @@ pub struct DataSource{
 }
 
 impl DataSource {
-    fn new() -> Self{
+    pub fn new() -> Self{
         Self{public_array: [0; MAX_PUBLIC_ARRAY_SIZE]}
     }
-    fn read_cpu_name(&mut self) {
+    pub fn read_cpu_name(&mut self) {
         if let Ok(cpuinfo_file) = File::open("/proc/cpuinfo") {
             let cpuinfo_reader = BufReader::new(cpuinfo_file);
             if let Some(Ok(name_info)) = cpuinfo_reader.lines().nth(4) {
@@ -58,7 +59,7 @@ impl DataSource {
         }
     }
 
-    fn read_thread(&mut self) {
+    pub fn read_thread(&mut self) {
         if let Ok(stat_file) = File::open("/proc/stat") {
             let stat_reader = BufReader::new(stat_file);
             for (number, thread) in stat_reader.lines().skip(1).take(THREAD_NUMBER).enumerate() {
@@ -81,7 +82,7 @@ impl DataSource {
         }
     }
 
-    fn read_mem(&mut self) {
+    pub fn read_mem(&mut self) {
         if let Ok(meminfo_file) = File::open("/proc/meminfo") {
             let meminfo_reader = BufReader::new(meminfo_file);
             for (number, info) in meminfo_reader.lines().take(3).enumerate() {
@@ -120,7 +121,7 @@ impl DataSource {
     }
 
 
-    fn read_disk(&mut self) {
+    pub fn read_disk(&mut self) {
         let path = "/";
         if let Ok(statvfs) = statvfs(path) {
             let f_frsize = statvfs.fragment_size();
@@ -157,12 +158,3 @@ impl DataSource {
     }
 }
 
-
-#[test]
-fn test_proc_reading() { // file reading exp
-    let mut source = DataSource::new();
-    source.read_cpu_name();
-    source.read_thread();
-    source.read_mem();
-    source.read_disk();
-}
