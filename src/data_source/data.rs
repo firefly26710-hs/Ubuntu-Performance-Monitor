@@ -53,11 +53,14 @@ impl DataSource {
         if let Ok(cpuinfo_file) = File::open("/proc/cpuinfo") {
             let cpuinfo_reader = BufReader::new(cpuinfo_file);
             if let Some(Ok(name_info)) = cpuinfo_reader.lines().nth(4) {
-                let actual_length = name_info.len();
-                let byte_char = name_info.as_bytes();
-
+                let name = match name_info.split(':').nth(1){
+                    Some(name) => name.trim(),
+                    None => name_info.trim(),
+                };
+                let name_len = name.len();
+                let byte_char = name.as_bytes();
                 let mut buffer_array = [0u8; PADDING_SIZE];
-                buffer_array[0..actual_length].copy_from_slice(&byte_char[0..actual_length]);
+                buffer_array[0..name_len].copy_from_slice(&byte_char[0..name_len]);
                 self.public_array[0..PADDING_SIZE].copy_from_slice(&buffer_array);
 
                 println!("-----------");
