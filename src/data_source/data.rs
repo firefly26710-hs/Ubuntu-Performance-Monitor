@@ -1,13 +1,7 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::str::from_utf8;
-use nix::libc::read;
 use nix::sys::statvfs::statvfs;
-//use crate::cpu::logic as cpu_logic;
-//use crate::mem::logic as mem_logic;
-//use crate::gpu::logic as gpu_logic;
-//use crate::disk::logic as disk_logic;
-
 
 // check table :
 //       cpu   : cpuinfo, stat
@@ -18,43 +12,47 @@ use nix::sys::statvfs::statvfs;
 // MemTotal : 28, MemAvl : 28
 
 
-const MAX_PUBLIC_ARRAY_SIZE:usize = 769;
+const MAX_PUBLIC_ARRAY_SIZE:usize = 832;
+const PADDING:usize = 64;
+const THREAD_START:usize = 64;
 const THREAD_NUMBER:usize = 12;
-const THREAD_PADDING:usize = 50;
-const MEMORY_INFO_PADDING:usize = 30;
 const TOTAL_MEMORY_INFO:usize = 0;
 const AVAILABLE_MEMORY_INFO:usize = 2;
 
-const DISK_INFO_PADDING:usize = 8;
-fn read_cpu(public_array:&mut[u8; MAX_PUBLIC_ARRAY_SIZE] ){
-    let mut name_length = 0;
+
+
+fn read_cpu_name(public_array:&mut[u8; MAX_PUBLIC_ARRAY_SIZE] ){
     if let Ok(cpuinfo_file) = File::open("/proc/cpuinfo") {
         let cpuinfo_reader = BufReader::new(cpuinfo_file);
         if let Some(Ok(name_info)) = cpuinfo_reader.lines().nth(4){
-            let name_as_bytes = name_info.as_bytes();
-            name_length = name_as_bytes.len();
+            let actual_length = name_info.len();
+            let byte_char = name_info.as_bytes();
 
-            public_array[0..name_length].copy_from_slice(&name_as_bytes[0..name_length]);
+            let mut buffer_array = [0u8; PADDING];
+            buffer_array[0..actual_length].copy_from_slice(&byte_char[0..actual_length]);
+            public_array[0..PADDING].copy_from_slice(&buffer_array);
 
             println!("-----------");
-            println!("{}", from_utf8(&public_array[0..name_length]).unwrap());
+            println!("{}", from_utf8(&public_array[0..PADDING]).unwrap());
             println!("-----------");
         }
     }
+}
 
+fn read_thread(public_array:&mut[u8; MAX_PUBLIC_ARRAY_SIZE] ){
     if let Ok(stat_file) = File::open("/proc/stat"){
         let stat_reader = BufReader::new(stat_file);
         for(number, thread) in stat_reader.lines().skip(1).take(THREAD_NUMBER).enumerate(){
             if let Ok(thread_info) = thread{
-                let thread_as_bytes = thread_info.as_bytes();
-                let thread_length = thread_as_bytes.len();
-                let offest = number*THREAD_PADDING;
-                let start = name_length + offest;
-                let end = start + THREAD_PADDING;
+                let actual_length = thread_info.len();
+                let byte_char = thread_info.as_bytes();
 
-                let mut buffer_padding = [0u8; THREAD_PADDING];
-                buffer_padding[0..thread_length].copy_from_slice(&thread_as_bytes[0..thread_length]);
+                let offest = number*PADDING;
+                let start = THREAD_START + offest;
+                let end = start + PADDING;
 
+                let mut buffer_padding = [0u8; PADDING];
+                buffer_padding[0..actual_length].copy_from_slice(&byte_char[0..actual_length]);
                 public_array[start..end].copy_from_slice(&buffer_padding);
                 println!("-----------");
                 println!("{}", from_utf8(&public_array[start..end]).unwrap());
@@ -62,23 +60,24 @@ fn read_cpu(public_array:&mut[u8; MAX_PUBLIC_ARRAY_SIZE] ){
             }
         }
     }
+
 }
 
 fn read_mem(public_array:&mut[u8; MAX_PUBLIC_ARRAY_SIZE]){
     if let Ok(meminfo_file) = File::open("/proc/meminfo"){
         let meminfo_reader = BufReader::new(meminfo_file);
         for(number, info) in meminfo_reader.lines().take(3).enumerate(){
-            if let Ok(this_info) = info{
-                let info_as_bytes = this_info.as_bytes();
-                let info_length = info_as_bytes.len();
-                let mut buffer_padding = [0u8; MEMORY_INFO_PADDING];
-                buffer_padding[0..info_length].copy_from_slice(&info_as_bytes[0..info_length]);
+            if let Ok(info) = info{
+                let actual_length = info.len();
+                let byte_char = info.as_bytes();
+                let mut buffer_padding = [0u8; PADDING];
+                buffer_padding[0..actual_length].copy_from_slice(&byte_char[0..actual_length]);
                 match number {
                     TOTAL_MEMORY_INFO
-                    => public_array[0..MEMORY_INFO_PADDING].copy_from_slice(&buffer_padding),
+                    => public_array[0..PADDING].copy_from_slice(&buffer_padding),
 
                     AVAILABLE_MEMORY_INFO
-                    => public_array[MEMORY_INFO_PADDING..MEMORY_INFO_PADDING * 2].copy_from_slice(&buffer_padding),
+                    => public_array[PADDING..PADDING+PADDING].copy_from_slice(&buffer_padding),
 
                     _
                     => {}
@@ -87,12 +86,12 @@ fn read_mem(public_array:&mut[u8; MAX_PUBLIC_ARRAY_SIZE]){
                 match number {
                     0 => {
                         println!("-----------");
-                        println!("{}\n", from_utf8(&public_array[0..30]).unwrap());
+                        println!("{}\n", from_utf8(&public_array[0..PADDING]).unwrap());
                         println!("-----------");
                     },
                     2 => {
                         println!("-----------");
-                        println!("{}\n", from_utf8(&public_array[30..60]).unwrap());
+                        println!("{}\n", from_utf8(&public_array[PADDING..PADDING+PADDING]).unwrap());
                         println!("-----------");
                     },
                     _ => {}
@@ -112,18 +111,29 @@ fn read_disk(public_array:&mut[u8; MAX_PUBLIC_ARRAY_SIZE]){
         let f_blocks = statvfs.blocks();
         let f_bavail = statvfs.blocks_available();
 
-        let total = f_blocks * f_frsize;
-        let avail = f_bavail * f_frsize;
+        let disk_total = f_blocks * f_frsize;
+        let disk_avail = f_bavail * f_frsize;
 
-        let total_as_bytes = total.to_be_bytes();
-        let avail_as_bytes = avail.to_be_bytes();
 
-        public_array[0..DISK_INFO_PADDING].copy_from_slice(&total_as_bytes);
-        public_array[DISK_INFO_PADDING..DISK_INFO_PADDING*2].copy_from_slice(&avail_as_bytes);
+        let total_byte_char = disk_total.to_be_bytes();
+        let avail_byte_char = disk_avail.to_be_bytes();
 
+        let len_total = total_byte_char.len();
+        let len_avail = avail_byte_char.len();
+
+        let mut buffer_array = [0u8 ; PADDING];
+
+        buffer_array[0..len_avail].copy_from_slice(&avail_byte_char[0..len_avail]);
+        public_array[PADDING..PADDING+PADDING].copy_from_slice(&buffer_array[0..PADDING]);
+
+        buffer_array[0..len_total].copy_from_slice(&total_byte_char[0..len_total]);
+        public_array[0..PADDING].copy_from_slice(&buffer_array[0..PADDING]);
+
+        let total_restored = u64::from_be_bytes(public_array[0..8].try_into().unwrap());
+        let avail_restored = u64::from_be_bytes(public_array[PADDING..PADDING + 8].try_into().unwrap());
         println!("-----------");
-        println!("{}", u64::from_be_bytes(public_array[0..DISK_INFO_PADDING].try_into().unwrap()));
-        println!("{}", u64::from_be_bytes(public_array[DISK_INFO_PADDING..DISK_INFO_PADDING*2].try_into().unwrap()));
+        println!("Total: {}", total_restored);
+        println!("Avail: {}", avail_restored);
         println!("-----------");
 
     }
@@ -135,7 +145,9 @@ fn read_disk(public_array:&mut[u8; MAX_PUBLIC_ARRAY_SIZE]){
 #[test]
 fn test_proc_reading() { // file reading exp
     let mut public_array:[u8; MAX_PUBLIC_ARRAY_SIZE] = [0; MAX_PUBLIC_ARRAY_SIZE];
-    read_disk(&mut public_array);
+
+    read_cpu_name(&mut public_array);
+    read_thread(&mut public_array);
     read_mem(&mut public_array);
-    read_cpu(&mut public_array);
+    read_disk(&mut public_array);
 }

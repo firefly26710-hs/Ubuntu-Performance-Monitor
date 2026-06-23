@@ -4,3 +4,5 @@ struct Information{
     name:String,
     threads_usage:[String; THREAD_NUMBER*THREAD_USAGE]
 }
+
+
