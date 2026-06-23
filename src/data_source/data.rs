@@ -24,13 +24,21 @@ use nix::sys::statvfs::statvfs;
 
 
 
-pub const PADDING_SIZE:usize = 64;
-pub const PADDING_NUMBER:usize = 13;
+const PADDING_SIZE:usize = 64;
+const HALF_SIZE:usize = PADDING_SIZE / 2;
+const PADDING_NUMBER:usize = 13;
 const MAX_PUBLIC_ARRAY_SIZE:usize = PADDING_NUMBER * PADDING_SIZE;
-const THREAD_START:usize = PADDING_SIZE;
-const THREAD_NUMBER:usize = 12;
+
+
 const TOTAL_MEMORY_INFO:usize = 0;
 const AVAILABLE_MEMORY_INFO:usize = 2;
+
+const THREAD_START:usize = 64;
+const THREAD_NUMBER:usize = 12;
+
+const NAME_INFO_START:usize = 0;
+const NAME_INFO_END: usize = PADDING_SIZE - NAME_INFO_START;
+const THREAD_SIZE:usize = THREAD_NUMBER * PADDING_SIZE;
 
 
 pub struct DataSource{
@@ -57,30 +65,56 @@ impl DataSource {
                 println!("-----------");
             }
         }
-    }
 
-    pub fn read_thread(&mut self) {
         if let Ok(stat_file) = File::open("/proc/stat") {
             let stat_reader = BufReader::new(stat_file);
             for (number, thread) in stat_reader.lines().skip(1).take(THREAD_NUMBER).enumerate() {
                 if let Ok(thread_info) = thread {
-                    let actual_length = thread_info.len();
-                    let byte_char = thread_info.as_bytes();
+                    let mut parts = thread_info.split_whitespace();
+                    parts.next();
+
+                    let mut current_total: u64 = 0;
+                    let mut current_idle: u64 = 0;
+                    for(index, slice) in parts.enumerate(){
+                        if let Ok(val) = slice.parse::<u64>(){
+                            current_total+=val;
+                            if(index == 3){
+                                current_idle = val;
+                            }
+                        }
+                    }
+
+                    let total_byte_char = current_total.to_be_bytes();
+                    let idle_byte_char = current_idle.to_be_bytes();
+
+                    let len_total = total_byte_char.len();
+                    let len_idle = idle_byte_char.len();
 
                     let offest = number * PADDING_SIZE;
                     let start = THREAD_START + offest;
                     let end = start + PADDING_SIZE;
+                    let mid = (start + end) / 2;
 
-                    let mut buffer_padding = [0u8; PADDING_SIZE];
-                    buffer_padding[0..actual_length].copy_from_slice(&byte_char[0..actual_length]);
-                    self.public_array[start..end].copy_from_slice(&buffer_padding);
+
+                    let mut buffer_padding = [0u8; HALF_SIZE];
+
+                    buffer_padding[0..len_idle].copy_from_slice(&idle_byte_char[0..len_idle]);
+                    self.public_array[start..mid].copy_from_slice(&buffer_padding);
+
+                    buffer_padding[0..len_total].copy_from_slice(&total_byte_char[0..len_total]);
+                    self.public_array[mid..end].copy_from_slice(&buffer_padding);
+
+
+                    let check_idle = u64::from_be_bytes(self.public_array[start..start+8].try_into().unwrap());
+                    let check_total = u64::from_be_bytes(self.public_array[mid..mid+8].try_into().unwrap());
                     println!("-----------");
-                    println!("{}", from_utf8(&self.public_array[start..end]).unwrap());
+                    println!("Thread {} -> Idle(前半): {}, Total(後半): {}", number, check_idle, check_total);
                     println!("-----------");
                 }
             }
         }
     }
+
 
     pub fn read_mem(&mut self) {
         if let Ok(meminfo_file) = File::open("/proc/meminfo") {
