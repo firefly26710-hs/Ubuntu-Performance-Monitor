@@ -2,6 +2,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use crate::data_source::data::{DataSource, PADDING_SIZE};
 
+const MEMORY_FILE : &str = "/proc/meminfo";
 const THIS_IS_TOTAL_MEMORY_INFO:usize = 0;
 const THIS_IS_AVAILABLE_MEMORY_INFO:usize = 2;
 const MEMORY_TOTAL_START:usize = 0;
@@ -11,7 +12,7 @@ const MEMORY_AVAIL_END:usize = MEMORY_AVAIL_START + PADDING_SIZE;
 pub fn read_mem_info(source:&mut DataSource) {
     let data_source = &mut source.public_array;
     
-    if let Ok(file) = File::open("/proc/meminfo") {
+    if let Ok(file) = File::open(MEMORY_FILE) {
         let reader = BufReader::new(file);
         for (THIS_INFO, info) in reader.lines().take(3).enumerate() {
             if let Ok(info) = info {
