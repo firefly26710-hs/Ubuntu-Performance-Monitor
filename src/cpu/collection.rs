@@ -16,16 +16,15 @@ pub fn read_cpu_info(source:&mut DataSource) {
 
     if let Ok(file) = File::open("/proc/cpuinfo") {
         let reader = BufReader::new(file);
-        if let Some(Ok(info)) = reader.lines().nth(4) {
-            let name = match info.split(':').nth(1){
+        if let Some(Ok(raw_data)) = reader.lines().nth(4) {
+            let name = match raw_data.split(':').nth(1){
                 Some(name) => name.trim(),
-                None => info.trim(),
+                None => raw_data.trim(),
             };
             let name_len = name.len();
             let byte_char = name.as_bytes();
-            let mut buffer_array = [0u8; PADDING_SIZE];
-            buffer_array[0..name_len].copy_from_slice(&byte_char[0..name_len]);
-            data_source[0..PADDING_SIZE].copy_from_slice(&buffer_array);
+            data_source[NAME_INFO_START..NAME_INFO_END].fill(0);
+            data_source[NAME_INFO_START..name_len].copy_from_slice(&byte_char);
 
             println!("-----------");
             println!("{}", from_utf8(&data_source[0..PADDING_SIZE]).unwrap());
@@ -37,19 +36,17 @@ pub fn read_cpu_info(source:&mut DataSource) {
 
     if let Ok(file) = File::open("/proc/stat") {
         let reader = BufReader::new(file);
-        for (NUMBER, infos) in reader.lines().skip(1).take(THREAD_NUMBER).enumerate() {
-            if let Ok(info) = infos {
-                let mut datas = info.split_whitespace();
-                datas.next();
+        for (NUMBER, raw_datas) in reader.lines().skip(1).take(THREAD_NUMBER).enumerate() {
+            if let Ok(raw_data) = raw_datas {
+                let mut data = raw_data.split_whitespace();
+                data.next();
 
                 let mut current_total: u64 = 0;
                 let mut current_idle: u64 = 0;
-                for(index, slice) in datas.enumerate(){
+                for(index, slice) in data.enumerate(){
                     if let Ok(val) = slice.parse::<u64>(){
                         current_total+=val;
-                        if index == 3{
-                            current_idle = val;
-                        }
+                        if index == 3{ current_idle = val; }
                     }
                 }
 
@@ -64,18 +61,12 @@ pub fn read_cpu_info(source:&mut DataSource) {
                 let end = start + PADDING_SIZE;
                 let mid = (start + end) / 2;
 
-
-                let mut buffer_padding = [0u8; HALF_SIZE];
-
-                buffer_padding[0..len_idle].copy_from_slice(&idle_byte_char[0..len_idle]);
-                data_source[start..mid].copy_from_slice(&buffer_padding);
-
-                buffer_padding[0..len_total].copy_from_slice(&total_byte_char[0..len_total]);
-                data_source[mid..end].copy_from_slice(&buffer_padding);
+                data_source[start..start + len_idle].copy_from_slice(&idle_byte_char);
+                data_source[mid..mid + len_total].copy_from_slice(&total_byte_char);
 
 
-                let check_idle = u64::from_be_bytes(data_source[start..start+8].try_into().unwrap());
-                let check_total = u64::from_be_bytes(data_source[mid..mid+8].try_into().unwrap());
+                let check_idle = u64::from_be_bytes(data_source[start..start + len_total].try_into().unwrap());
+                let check_total = u64::from_be_bytes(data_source[mid..mid+len_idle].try_into().unwrap());
                 println!("-----------");
                 println!("Thread {} -> Idle(前半): {}, Total(後半): {}", NUMBER, check_idle, check_total);
                 println!("-----------");

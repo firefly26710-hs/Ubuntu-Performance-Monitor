@@ -7,9 +7,10 @@ const TOTAL_MEMORY_INFO:usize = 0;
 const AVAILABLE_MEMORY_INFO:usize = 2;
 pub fn read_mem_info(source:&mut DataSource) {
     let data_source = &mut source.public_array;
-    if let Ok(meminfo_file) = File::open("/proc/meminfo") {
-        let meminfo_reader = BufReader::new(meminfo_file);
-        for (number, info) in meminfo_reader.lines().take(3).enumerate() {
+    
+    if let Ok(file) = File::open("/proc/meminfo") {
+        let reader = BufReader::new(file);
+        for (number, info) in reader.lines().take(3).enumerate() {
             if let Ok(info) = info {
                 let actual_length = info.len();
                 let byte_char = info.as_bytes();
@@ -27,12 +28,14 @@ pub fn read_mem_info(source:&mut DataSource) {
                 }
 
                 match number {
-                    0 => {
+                    TOTAL_MEMORY_INFO
+                    => {
                         println!("-----------");
                         println!("{}", from_utf8(&data_source[0..PADDING_SIZE]).unwrap());
                         println!("-----------");
                     },
-                    2 => {
+                    AVAILABLE_MEMORY_INFO
+                    => {
                         println!("-----------");
                         println!("{}", from_utf8(&data_source[PADDING_SIZE..2 * PADDING_SIZE]).unwrap());
                         println!("-----------");
