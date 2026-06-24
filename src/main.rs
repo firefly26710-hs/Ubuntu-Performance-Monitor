@@ -1,7 +1,7 @@
-use crate::cpu::classifier::read_cpu_info;
-use crate::disk::classifier::read_disk_info;
+use crate::cpu::collection::read_cpu_info;
+use crate::disk::collection::read_disk_info;
 use crate::data_source::data::DataSource;
-use crate::mem::classifier::read_mem_info;
+use crate::mem::collection::read_mem_info;
 
 mod data_source;
 mod cpu;
