@@ -24,6 +24,7 @@ pub fn read_mem_info(source:&mut DataSource) {
                         if index == 0{ number = val }
                     }
                 }
+                
                 let byte_char = number.to_be_bytes();
                 let length = byte_char.len();
                 match THIS_INFO {
