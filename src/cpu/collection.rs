@@ -70,10 +70,9 @@ pub fn read_cpu_info(source:&mut DataSource) {
                 let end = start + PADDING_SIZE;
                 let mid = (start + end) / 2;
 
-                data_source[start..mid].fill(0);
+                data_source[start..end].fill(0);
+                
                 data_source[start..start + len_total].copy_from_slice(&total_byte_char);
-
-                data_source[mid..end].fill(0);
                 data_source[mid..mid + len_idle].copy_from_slice(&idle_byte_char);
 
 
