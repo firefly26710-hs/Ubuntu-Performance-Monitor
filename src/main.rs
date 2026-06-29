@@ -1,5 +1,4 @@
 use nvml_wrapper::Nvml;
-use nvml_wrapper::error::NvmlError;
 use crate::data_source::data::DataSource;
 use crate::cpu::collection::read_cpu_info;
 use crate::mem::collection::read_mem_info;
@@ -12,12 +11,13 @@ mod disk;
 mod mem;
 mod gpu;
 
-fn main() -> Result<(), NvmlError>{
+fn main() -> Result<(), Box<dyn std::error::Error>>{
     let mut source = DataSource::new();
+    let nvml = Nvml::init()?;
     read_cpu_info(&mut source);
     read_mem_info(&mut source);
     read_disk_info(&mut source);
-    let nvml = Nvml::init()?;
     read_gpu_info(&nvml, &mut source);
+
     Ok(())
 }

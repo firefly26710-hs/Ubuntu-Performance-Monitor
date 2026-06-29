@@ -3,6 +3,15 @@ use nvml_wrapper::Nvml;
 use nvml_wrapper::error::NvmlError;
 use crate::data_source::data::{DataSource, PADDING_SIZE};
 
+const GPU_NAME_START:usize = 0;
+const GPU_NAME_END:usize = GPU_NAME_START + PADDING_SIZE;
+const VRAM_TOTAL_START:usize = PADDING_SIZE;
+const VRAM_TOTAL_END:usize = VRAM_TOTAL_START + PADDING_SIZE;
+const VRAM_AVAIL_START:usize = PADDING_SIZE*2;
+const VRAM_AVAIL_END:usize = VRAM_AVAIL_START + PADDING_SIZE;
+
+
+
 pub fn read_gpu_info(nvml: &Nvml,source: &mut DataSource)-> Result<(), NvmlError> {
     let data_source = &mut source.public_array;
 
@@ -21,14 +30,14 @@ pub fn read_gpu_info(nvml: &Nvml,source: &mut DataSource)-> Result<(), NvmlError
     let total_length = total_byte_char.len();
     let avail_length = avail_byte_char.len();
 
-    data_source[0..PADDING_SIZE].fill(0);
-    data_source[0..name.len()].copy_from_slice(&name_byte_char);
+    data_source[GPU_NAME_START..GPU_NAME_END].fill(0);
+    data_source[GPU_NAME_START..GPU_NAME_START+name.len()].copy_from_slice(&name_byte_char);
 
-    data_source[PADDING_SIZE..PADDING_SIZE * 2].fill(0);
-    data_source[PADDING_SIZE..PADDING_SIZE + total_length].copy_from_slice(&total_byte_char);
+    data_source[VRAM_TOTAL_START..VRAM_TOTAL_END].fill(0);
+    data_source[VRAM_TOTAL_START..VRAM_TOTAL_START + total_length].copy_from_slice(&total_byte_char);
 
-    data_source[PADDING_SIZE * 2..PADDING_SIZE * 3].fill(0);
-    data_source[PADDING_SIZE * 2..PADDING_SIZE * 2 + avail_length].copy_from_slice(&avail_byte_char);
+    data_source[VRAM_AVAIL_START..VRAM_AVAIL_END].fill(0);
+    data_source[VRAM_AVAIL_START..VRAM_AVAIL_START + avail_length].copy_from_slice(&avail_byte_char);
 
     let check_gpu_name = from_utf8(&data_source[0..name_length]).unwrap();
     let check_vram_total = u64::from_be_bytes(data_source[PADDING_SIZE..PADDING_SIZE + 8].try_into().unwrap());
