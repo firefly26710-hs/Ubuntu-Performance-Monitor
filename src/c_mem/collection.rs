@@ -27,19 +27,19 @@ pub fn read_mem_info(source:&mut DataSource) -> Result<(), Box<dyn std::error::E
         }
 
 
-        let byte_char:[u8; U64_LEN] = number.to_be_bytes();
+        let slice:[u8; U64_LEN] = number.to_be_bytes();
 
         match THIS_INFO {
             THIS_INFO_IS_TOTAL_MEMORY
             => {
                 data_source[MEMORY_TOTAL_START..MEMORY_TOTAL_END].fill(0);
-                data_source[MEMORY_TOTAL_START..MEMORY_TOTAL_START + U64_LEN].copy_from_slice(&byte_char)
+                data_source[MEMORY_TOTAL_START..MEMORY_TOTAL_START + U64_LEN].copy_from_slice(&slice)
             },
 
             THIS_INFO_IS_AVAILABLE_MEMORY
             => {
                 data_source[MEMORY_AVAIL_START..MEMORY_AVAIL_END].fill(0);
-                data_source[MEMORY_AVAIL_START..MEMORY_AVAIL_START + U64_LEN].copy_from_slice(&byte_char)
+                data_source[MEMORY_AVAIL_START..MEMORY_AVAIL_START + U64_LEN].copy_from_slice(&slice)
             },
 
             _

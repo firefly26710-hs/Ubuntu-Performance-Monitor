@@ -12,9 +12,7 @@ const U64_LEN:usize = 8;
 pub fn read_disk_info(read:&statvfs,source:&mut DataSource) -> Result<(), Box<dyn std::error::Error>> {
     let data_source = &mut source.public_array;
 
-
-
-
+    
     let block_size = read.f_frsize;
     let total_block = read.f_blocks;
     let avail_block = read.f_bavail;
@@ -22,20 +20,22 @@ pub fn read_disk_info(read:&statvfs,source:&mut DataSource) -> Result<(), Box<dy
     let disk_total = total_block * block_size;
     let disk_avail = avail_block * block_size;
 
-    let total_byte_char = disk_total.to_be_bytes();
-    let avail_byte_char = disk_avail.to_be_bytes();
-
-
+    let total_slice = disk_total.to_be_bytes();
+    let avail_slice = disk_avail.to_be_bytes();
+    
+    let total_length = U64_LEN;
+    let avail_length = U64_LEN;
+    
     data_source[DISK_TOTAL_START..DISK_TOTAL_END].fill(0);
-    data_source[DISK_TOTAL_START..DISK_TOTAL_START+U64_LEN].copy_from_slice(&total_byte_char);
+    data_source[DISK_TOTAL_START..DISK_TOTAL_START+total_length].copy_from_slice(&total_slice);
 
     data_source[DISK_AVAIL_START..DISK_AVAIL_END].fill(0);
-    data_source[DISK_AVAIL_START..DISK_AVAIL_START +U64_LEN].copy_from_slice(&avail_byte_char);
+    data_source[DISK_AVAIL_START..DISK_AVAIL_START +avail_length].copy_from_slice(&avail_slice);
 
-    let check_total_disk = u64::from_be_bytes(data_source[0..U64_LEN].try_into().unwrap());
-    let check_idle_disk = u64::from_be_bytes(data_source[PADDING_SIZE..PADDING_SIZE + U64_LEN].try_into().unwrap());
+    let check_total_disk = u64::from_be_bytes(data_source[0..total_length].try_into()?);
+    let check_avail_disk = u64::from_be_bytes(data_source[PADDING_SIZE..PADDING_SIZE + avail_length].try_into()?);
     println!("-----------");
-    println!("DISK TOTAL : {}, DISK AVAIL: {}", check_total_disk, check_idle_disk);
+    println!("DISK TOTAL : {}, DISK AVAIL: {}", check_total_disk, check_avail_disk);
     println!("-----------");
 
 
