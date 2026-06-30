@@ -3,19 +3,16 @@ use crate::a_data_source::data::{DataSource, PADDING_SIZE};
 
 
 const QUERY_RANGE:&str = "/";
-const DISK_TOTAL_START:usize = 0;
+pub const DISK_TOTAL_START:usize = 0;
 const DISK_TOTAL_END:usize = DISK_TOTAL_START + PADDING_SIZE;
-const DISK_IDLE_START:usize = PADDING_SIZE;
-const DISK_IDLE_END:usize = DISK_IDLE_START + PADDING_SIZE;
+pub const DISK_AVAIL_START:usize = PADDING_SIZE;
+const DISK_AVAIL_END:usize = DISK_AVAIL_START + PADDING_SIZE;
 const U64_LEN:usize = 8;
 
-pub fn read_disk_info(source:&mut DataSource) -> Result<(), Box<dyn std::error::Error>> {
+pub fn read_disk_info(read:&statvfs,source:&mut DataSource) -> Result<(), Box<dyn std::error::Error>> {
     let data_source = &mut source.public_array;
 
-    let mut read: statvfs = unsafe { std::mem::zeroed() };
-    if unsafe { statvfs(c"/".as_ptr(), &mut read) } != 0 {
-        return Err("statvfs syscall failed".into());
-    }
+
 
 
     let block_size = read.f_frsize;
@@ -32,8 +29,8 @@ pub fn read_disk_info(source:&mut DataSource) -> Result<(), Box<dyn std::error::
     data_source[DISK_TOTAL_START..DISK_TOTAL_END].fill(0);
     data_source[DISK_TOTAL_START..DISK_TOTAL_START+U64_LEN].copy_from_slice(&total_byte_char);
 
-    data_source[DISK_IDLE_START..DISK_IDLE_END].fill(0);
-    data_source[DISK_IDLE_START..DISK_IDLE_START+U64_LEN].copy_from_slice(&avail_byte_char);
+    data_source[DISK_AVAIL_START..DISK_AVAIL_END].fill(0);
+    data_source[DISK_AVAIL_START..DISK_AVAIL_START +U64_LEN].copy_from_slice(&avail_byte_char);
 
     let check_total_disk = u64::from_be_bytes(data_source[0..U64_LEN].try_into().unwrap());
     let check_idle_disk = u64::from_be_bytes(data_source[PADDING_SIZE..PADDING_SIZE + U64_LEN].try_into().unwrap());

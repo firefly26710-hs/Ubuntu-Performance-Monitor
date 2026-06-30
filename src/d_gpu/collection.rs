@@ -5,9 +5,9 @@ use crate::a_data_source::data::{DataSource, PADDING_SIZE};
 
 const GPU_NAME_START:usize = 0;
 const GPU_NAME_END:usize = GPU_NAME_START + PADDING_SIZE;
-const VRAM_TOTAL_START:usize = PADDING_SIZE;
+pub const VRAM_TOTAL_START:usize = PADDING_SIZE;
 const VRAM_TOTAL_END:usize = VRAM_TOTAL_START + PADDING_SIZE;
-const VRAM_AVAIL_START:usize = PADDING_SIZE*2;
+pub const VRAM_AVAIL_START:usize = PADDING_SIZE*2;
 const VRAM_AVAIL_END:usize = VRAM_AVAIL_START + PADDING_SIZE;
 
 
