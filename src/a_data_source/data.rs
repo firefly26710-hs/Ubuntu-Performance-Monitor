@@ -28,14 +28,14 @@ pub const TIMESTAMP:usize = 30;
 
 pub struct DataSource{
     pub public_array:[u8; MAX_PUBLIC_ARRAY_SIZE],
-    pub history_array:[f64;30]
+    pub history_array:[[f64;30];12]
 }
 
 impl DataSource {
     pub fn new() -> Self {
         Self{
             public_array: [0; MAX_PUBLIC_ARRAY_SIZE],
-            history_array:[0f64;30]
+            history_array:[[0f64;30];12]
         }
     }
 
