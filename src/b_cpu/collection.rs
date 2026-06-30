@@ -2,7 +2,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::str::from_utf8;
 
-use crate::data_source::data::{DataSource, PADDING_SIZE};
+use crate::a_data_source::data::{DataSource, PADDING_SIZE};
 
 const NAME_FILE:&str = "/proc/cpuinfo";
 const THREAD_FILE: &str = "/proc/stat";

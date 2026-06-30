@@ -1,7 +1,7 @@
 use std::str::from_utf8;
 use nvml_wrapper::Nvml;
 use nvml_wrapper::error::NvmlError;
-use crate::data_source::data::{DataSource, PADDING_SIZE};
+use crate::a_data_source::data::{DataSource, PADDING_SIZE};
 
 const GPU_NAME_START:usize = 0;
 const GPU_NAME_END:usize = GPU_NAME_START + PADDING_SIZE;

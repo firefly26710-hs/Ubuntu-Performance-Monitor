@@ -1,15 +1,18 @@
 use nvml_wrapper::Nvml;
-use crate::data_source::data::DataSource;
-use crate::cpu::collection::read_cpu_info;
-use crate::mem::collection::read_mem_info;
-use crate::disk::collection::read_disk_info;
-use crate::gpu::collection::read_gpu_info;
+use crate::a_data_source::data;
+use crate::a_data_source::data::DataSource;
+use crate::b_cpu::collection::read_cpu_info;
+use crate::c_mem::collection::read_mem_info;
+use crate::e_disk::collection::read_disk_info;
+use crate::d_gpu::collection::read_gpu_info;
 
-mod data_source;
-mod cpu;
-mod disk;
-mod mem;
-mod gpu;
+mod a_data_source;
+mod b_cpu;
+mod c_mem;
+mod d_gpu;
+mod e_disk;
+
+
 
 fn main() -> Result<(), Box<dyn std::error::Error>>{
     let mut source = DataSource::new();
