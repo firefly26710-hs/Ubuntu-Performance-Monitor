@@ -32,9 +32,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
     if unsafe { statvfs(c"/".as_ptr(), &mut read) } != 0 {
         return Err("statvfs syscall failed".into());
     }
-    read_mem_info(&mut source);
-    mem_rating(&mut source);
-
+    
 
 
     Ok(())
