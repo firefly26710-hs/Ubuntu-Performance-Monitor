@@ -1,19 +1,20 @@
-use crate::a_data_source::data::{DataSource, PADDING_SIZE, U64_SIZE};
-use crate::b_cpu::collection::{THREAD_START};
+use crate::a_data_source::data::{DataSource, HALF_PADDING_SIZE, PADDING_SIZE};
+use crate::b_cpu::collection::THREAD_START;
 
 pub fn cpu_rating(source:&mut DataSource) {
-    let data_source = &source.public_array;
+    let data_array = &source.data_array;
 
-    for (NUMBER, thread) in data_source.chunks(PADDING_SIZE).skip(1).enumerate(){
+    for (NUMBER, _) in data_array.chunks(PADDING_SIZE).enumerate(){
         let history = &mut source.history_array[NUMBER];
+
         let offest = NUMBER * PADDING_SIZE;
         let start = THREAD_START + offest;
         let end = start + PADDING_SIZE;
         let mid = (start + end) / 2;
 
 
-        let total_slice:&[u8; U64_SIZE] = (&data_source[start..start + U64_SIZE]).try_into().unwrap();
-        let idle_slice:&[u8; U64_SIZE] = (&data_source[mid..mid + U64_SIZE]).try_into().unwrap();
+        let total_slice:&[u8; HALF_PADDING_SIZE] = (&data_array[start..start + HALF_PADDING_SIZE]).try_into().unwrap();
+        let idle_slice:&[u8; HALF_PADDING_SIZE] = (&data_array[mid..mid + HALF_PADDING_SIZE]).try_into().unwrap();
 
         let total_to_u64 = u64::from_be_bytes(*total_slice);
         let idle_to_u64 = u64::from_be_bytes(*idle_slice);

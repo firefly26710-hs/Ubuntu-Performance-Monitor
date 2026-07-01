@@ -3,7 +3,7 @@ use crate::e_disk::collection::{DISK_AVAIL_START, DISK_TOTAL_START};
 
 const U64_SIZE: usize = 8;
 pub fn disk_rating(source:&mut DataSource){
-    let data_source = &mut source.public_array;
+    let data_source = &mut source.data_array;
     let history = &mut source.history_array[0];
 
     let total_slice: &[u8; U64_SIZE] = (&data_source[DISK_TOTAL_START..DISK_TOTAL_START + U64_SIZE]).try_into().unwrap();

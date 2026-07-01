@@ -1,12 +1,12 @@
-use crate::a_data_source::data::{DataSource, MAX_PUBLIC_ARRAY_SIZE, U64_SIZE};
+use crate::a_data_source::data::{DataSource, DATA_ARRAY_SIZE, U64_LEN};
 use crate::c_mem::collection::{MEMORY_AVAIL_START, MEMORY_TOTAL_START};
 
 pub fn mem_rating(source:&mut DataSource){
-    let data_source:&mut[u8; MAX_PUBLIC_ARRAY_SIZE] = &mut source.public_array;
+    let data_source:&mut[u8; DATA_ARRAY_SIZE] = &mut source.data_array;
     let history = &mut source.history_array[0];
 
-    let total_slice: &[u8; U64_SIZE] = (&data_source[MEMORY_TOTAL_START..MEMORY_TOTAL_START + U64_SIZE]).try_into().unwrap();
-    let avail_slice: &[u8; U64_SIZE] = (&data_source[MEMORY_AVAIL_START..MEMORY_AVAIL_START + U64_SIZE]).try_into().unwrap();
+    let total_slice: &[u8; U64_LEN] = (&data_source[MEMORY_TOTAL_START..MEMORY_TOTAL_START + U64_LEN]).try_into().unwrap();
+    let avail_slice: &[u8; U64_LEN] = (&data_source[MEMORY_AVAIL_START..MEMORY_AVAIL_START + U64_LEN]).try_into().unwrap();
 
     let total_to_u64 = u64::from_be_bytes(*total_slice);
     let avail_to_u64 = u64::from_be_bytes(*avail_slice);

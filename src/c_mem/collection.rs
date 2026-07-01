@@ -10,7 +10,7 @@ pub const MEMORY_AVAIL_START:usize = PADDING_SIZE;
 pub const MEMORY_AVAIL_END:usize = MEMORY_AVAIL_START + PADDING_SIZE;
 const U64_LEN:usize = 8;
 pub fn read_mem_info(source:&mut DataSource) -> Result<(), Box<dyn std::error::Error>>{
-    let data_source = &mut source.public_array;
+    let data_source = &mut source.data_array;
     
     let file = File::open(MEMORY_FILE)?;
     let reader = BufReader::new(file);

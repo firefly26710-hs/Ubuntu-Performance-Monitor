@@ -10,7 +10,7 @@ const DISK_AVAIL_END:usize = DISK_AVAIL_START + PADDING_SIZE;
 const U64_LEN:usize = 8;
 
 pub fn read_disk_info(read:&statvfs,source:&mut DataSource) -> Result<(), Box<dyn std::error::Error>> {
-    let data_source = &mut source.public_array;
+    let data_source = &mut source.data_array;
 
     
     let block_size = read.f_frsize;
