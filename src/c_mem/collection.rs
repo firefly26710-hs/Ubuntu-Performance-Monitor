@@ -14,7 +14,7 @@ pub fn read_mem_info(source:&mut DataSource) -> Result<(), Box<dyn std::error::E
     
     let file = File::open(MEMORY_FILE)?;
     let reader = BufReader::new(file);
-    for (THIS_INFO, line) in reader.lines().take(3).enumerate() {
+    for (this_info, line) in reader.lines().take(3).enumerate() {
         let info = line?;
         
         let mut data = info.split_whitespace().skip(1);
@@ -26,7 +26,7 @@ pub fn read_mem_info(source:&mut DataSource) -> Result<(), Box<dyn std::error::E
         }
         
         let slice:[u8; HALF_PADDING_SIZE] = number.to_be_bytes();
-        match THIS_INFO {
+        match this_info {
             THIS_INFO_IS_TOTAL_MEMORY
             => {
                 data_array[MEMORY_TOTAL_START..MEMORY_TOTAL_END].fill(0);

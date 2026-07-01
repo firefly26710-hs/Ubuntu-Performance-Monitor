@@ -1,4 +1,4 @@
-use crate::a_data_source::data::{DataSource, DATA_ARRAY_SIZE, HALF_PADDING_SIZE, U64_LEN};
+use crate::a_data_source::data::{DataSource, DATA_ARRAY_SIZE, HALF_PADDING_SIZE};
 use crate::c_mem::collection::{MEMORY_AVAIL_END, MEMORY_AVAIL_START, MEMORY_TOTAL_END, MEMORY_TOTAL_START};
 
 pub fn mem_rating(source:&mut DataSource){

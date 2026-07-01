@@ -2,7 +2,6 @@ use nix::libc::statvfs;
 use crate::a_data_source::data::{DataSource, HALF_PADDING_SIZE, PADDING_SIZE};
 
 
-const QUERY_RANGE:&str = "/";
 pub const DISK_TOTAL_START:usize = 0;
 pub const DISK_TOTAL_END:usize = HALF_PADDING_SIZE;
 pub const DISK_AVAIL_START:usize = HALF_PADDING_SIZE;

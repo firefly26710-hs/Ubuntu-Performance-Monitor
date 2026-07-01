@@ -1,4 +1,4 @@
-use crate::a_data_source::data::{DataSource, HALF_PADDING_SIZE, U64_LEN};
+use crate::a_data_source::data::{DataSource, HALF_PADDING_SIZE};
 use crate::d_gpu::collection::{VRAM_AVAIL_END, VRAM_AVAIL_START, VRAM_TOTAL_END, VRAM_TOTAL_START};
 
 pub fn gpu_rating(source:&mut DataSource){
@@ -6,7 +6,7 @@ pub fn gpu_rating(source:&mut DataSource){
     let history = &mut source.history_array[0];
 
     let total_slice: &[u8; HALF_PADDING_SIZE] = (&data_source[VRAM_TOTAL_START..VRAM_TOTAL_END]).try_into().unwrap();
-    let avail_slice: &[u8; U64_LEN] = (&data_source[VRAM_AVAIL_START..VRAM_AVAIL_END]).try_into().unwrap();
+    let avail_slice: &[u8; HALF_PADDING_SIZE] = (&data_source[VRAM_AVAIL_START..VRAM_AVAIL_END]).try_into().unwrap();
 
     let total_to_u64 = u64::from_be_bytes(*total_slice);
     let avail_to_u64 = u64::from_be_bytes(*avail_slice);
