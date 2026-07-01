@@ -1,13 +1,12 @@
-use crate::a_data_source::data::DataSource;
-use crate::e_disk::collection::{DISK_AVAIL_START, DISK_TOTAL_START};
+use crate::a_data_source::data::{DataSource, HALF_PADDING_SIZE, PADDING_SIZE};
+use crate::e_disk::collection::{DISK_AVAIL_END, DISK_AVAIL_START, DISK_TOTAL_END, DISK_TOTAL_START};
 
-const U64_SIZE: usize = 8;
 pub fn disk_rating(source:&mut DataSource){
     let data_source = &mut source.data_array;
     let history = &mut source.history_array[0];
 
-    let total_slice: &[u8; U64_SIZE] = (&data_source[DISK_TOTAL_START..DISK_TOTAL_START + U64_SIZE]).try_into().unwrap();
-    let avail_slice: &[u8; U64_SIZE] = (&data_source[DISK_AVAIL_START..DISK_AVAIL_START + U64_SIZE]).try_into().unwrap();
+    let total_slice: &[u8; HALF_PADDING_SIZE] = (&data_source[DISK_TOTAL_START..DISK_TOTAL_END]).try_into().unwrap();
+    let avail_slice: &[u8; HALF_PADDING_SIZE] = (&data_source[DISK_AVAIL_START..DISK_AVAIL_END]).try_into().unwrap();
 
     let total_to_u64 = u64::from_be_bytes(*total_slice);
     let avail_to_u64 = u64::from_be_bytes(*avail_slice);

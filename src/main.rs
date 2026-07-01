@@ -10,6 +10,7 @@ mod c_mem;
 mod d_gpu;
 mod e_disk;
 
+
 use crate::b_cpu::collection::read_cpu_info;
 use crate::b_cpu::logic::cpu_rating;
 
@@ -23,8 +24,6 @@ use crate::e_disk::collection::read_disk_info;
 use crate::e_disk::logic::disk_rating;
 
 
-
-
 fn main() -> Result<(), Box<dyn std::error::Error>>{
     let mut source = DataSource::new();
     let nvml = Nvml::init()?;
@@ -32,8 +31,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
     if unsafe { statvfs(c"/".as_ptr(), &mut read) } != 0 {
         return Err("statvfs syscall failed".into());
     }
-    
-
+    read_disk_info(&read, &mut source)?;
+    disk_rating(&mut source);
 
     Ok(())
 }
