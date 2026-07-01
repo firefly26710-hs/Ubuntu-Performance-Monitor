@@ -7,7 +7,6 @@ use crate::a_data_source::data::{DataSource,  PADDING_SIZE};
 const NAME_FILE:&str = "/proc/cpuinfo";
 const THREAD_FILE: &str = "/proc/stat";
 const IDLE_POSITION:usize = 3;
-const U64_LEN:usize = 8;
 
 
 const NAME_INFO_START:usize = 0;
@@ -34,6 +33,7 @@ pub fn read_cpu_info(source:&mut DataSource) -> Result<(), Box<dyn std::error::E
 
     println!("-----------");
     println!("{}", from_utf8(&data_source[0..PADDING_SIZE])?);
+    println!("{}", length);
     println!("-----------");
 
 

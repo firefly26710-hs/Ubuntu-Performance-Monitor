@@ -1,7 +1,7 @@
 use std::str::from_utf8;
 use nvml_wrapper::Nvml;
 use nvml_wrapper::error::NvmlError;
-use crate::a_data_source::data::{DataSource, PADDING_SIZE};
+use crate::a_data_source::data::{DataSource, PADDING_SIZE, U64_SIZE};
 
 const GPU_NAME_START:usize = 0;
 const GPU_NAME_END:usize = GPU_NAME_START + PADDING_SIZE;
@@ -9,7 +9,6 @@ pub const VRAM_TOTAL_START:usize = PADDING_SIZE;
 const VRAM_TOTAL_END:usize = VRAM_TOTAL_START + PADDING_SIZE;
 pub const VRAM_AVAIL_START:usize = PADDING_SIZE*2;
 const VRAM_AVAIL_END:usize = VRAM_AVAIL_START + PADDING_SIZE;
-const U64_LEN:usize = 8;
 
 
 pub fn read_gpu_info(nvml: &Nvml,source: &mut DataSource)-> Result<(), NvmlError> {
@@ -27,8 +26,8 @@ pub fn read_gpu_info(nvml: &Nvml,source: &mut DataSource)-> Result<(), NvmlError
     let avail_slice = vram_avail.to_be_bytes();
 
     let name_length = name_slice.len();
-    let total_length = U64_LEN;
-    let avail_length = U64_LEN;
+    let total_length = U64_SIZE;
+    let avail_length = U64_SIZE;
 
     data_source[GPU_NAME_START..GPU_NAME_END].fill(0);
     data_source[GPU_NAME_START..GPU_NAME_START+name.len()].copy_from_slice(&name_slice);

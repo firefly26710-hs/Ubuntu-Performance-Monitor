@@ -1,7 +1,6 @@
-use crate::a_data_source::data::{DataSource, MAX_PUBLIC_ARRAY_SIZE};
+use crate::a_data_source::data::{DataSource, MAX_PUBLIC_ARRAY_SIZE, U64_SIZE};
 use crate::c_mem::collection::{MEMORY_AVAIL_START, MEMORY_TOTAL_START};
 
-const U64_SIZE: usize = 8;
 pub fn mem_rating(source:&mut DataSource){
     let data_source:&mut[u8; MAX_PUBLIC_ARRAY_SIZE] = &mut source.public_array;
     let history = &mut source.history_array[0];

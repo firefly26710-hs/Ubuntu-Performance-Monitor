@@ -1,8 +1,6 @@
-use nvml_wrapper::error::Bits::U64;
-use crate::a_data_source::data::{DataSource, PADDING_SIZE};
-use crate::b_cpu::collection::{THREAD_NUMBER, THREAD_START};
+use crate::a_data_source::data::{DataSource, PADDING_SIZE, U64_SIZE};
+use crate::b_cpu::collection::{THREAD_START};
 
-pub const U64_SIZE:usize = 8;
 pub fn cpu_rating(source:&mut DataSource) {
     let data_source = &source.public_array;
 

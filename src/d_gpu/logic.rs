@@ -1,7 +1,6 @@
-use crate::a_data_source::data::DataSource;
+use crate::a_data_source::data::{DataSource, U64_SIZE};
 use crate::d_gpu::collection::{VRAM_AVAIL_START, VRAM_TOTAL_START};
 
-const U64_SIZE: usize = 8;
 pub fn gpu_rating(source:&mut DataSource){
     let data_source = &mut source.public_array;
     let history = &mut source.history_array[0];
