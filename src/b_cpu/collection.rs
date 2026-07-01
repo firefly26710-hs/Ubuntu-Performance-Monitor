@@ -2,7 +2,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::str::from_utf8;
 
-use crate::a_data_source::data::{DataSource, PADDING_SIZE};
+use crate::a_data_source::data::{DataSource,  PADDING_SIZE};
 
 const NAME_FILE:&str = "/proc/cpuinfo";
 const THREAD_FILE: &str = "/proc/stat";
@@ -14,8 +14,8 @@ const NAME_INFO_START:usize = 0;
 const NAME_INFO_END: usize = NAME_INFO_START + PADDING_SIZE;
 
 
-const THREAD_START:usize = PADDING_SIZE;
-const THREAD_NUMBER:usize = 12;
+pub const THREAD_START:usize = PADDING_SIZE;
+pub const THREAD_NUMBER:usize = 12;
 
 
 pub fn read_cpu_info(source:&mut DataSource) -> Result<(), Box<dyn std::error::Error>>{
@@ -74,7 +74,7 @@ pub fn read_cpu_info(source:&mut DataSource) -> Result<(), Box<dyn std::error::E
         let check_total= u64::from_be_bytes(data_source[start..start + len_total].try_into()?);
         let check_idle= u64::from_be_bytes(data_source[mid..mid+len_idle].try_into()?);
         println!("-----------");
-        println!("Thread {} -> Total(前半): {}, Idle(前半): {}", NUMBER, check_total, check_idle);
+        println!("Thread {} -> Total(前半): {}, Idle(後半): {}", NUMBER, check_total, check_idle);
         println!("-----------");
     }
 

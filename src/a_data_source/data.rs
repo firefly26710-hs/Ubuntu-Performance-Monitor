@@ -24,7 +24,6 @@ pub const PADDING_NUMBER:usize = 13;
 pub const MAX_PUBLIC_ARRAY_SIZE:usize = PADDING_NUMBER * PADDING_SIZE;
 pub const TIMESTAMP:usize = 30;
 pub const THREAD_NUMBER:usize = 12;
-
 pub struct DataSource{
     pub public_array:[u8; MAX_PUBLIC_ARRAY_SIZE],
     pub history_array:[[f64;TIMESTAMP];THREAD_NUMBER]
