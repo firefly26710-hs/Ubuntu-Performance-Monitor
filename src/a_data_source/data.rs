@@ -36,6 +36,7 @@ pub const TIMESTAMP:usize = 30;
 pub struct DataSource{
     pub name_array:[u8; NAME_ARRAY_SIZE],
     pub data_array:[u8; DATA_ARRAY_SIZE],
+    pub prev_data_array:[u8; DATA_ARRAY_SIZE],
     pub history_array:[[f64;TIMESTAMP];PADDING_NUMBER]
 }
 
@@ -44,6 +45,7 @@ impl DataSource {
         Self{
             name_array:[0u8; NAME_ARRAY_SIZE],
             data_array: [0u8; DATA_ARRAY_SIZE],
+            prev_data_array:[0u8; DATA_ARRAY_SIZE],
             history_array:[[0f64;TIMESTAMP];PADDING_NUMBER]
         }
     }

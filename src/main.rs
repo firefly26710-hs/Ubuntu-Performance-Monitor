@@ -31,8 +31,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
     if unsafe { statvfs(c"/".as_ptr(), &mut read) } != 0 {
         return Err("statvfs syscall failed".into());
     }
-    read_disk_info(&read, &mut source)?;
-    disk_rating(&mut source);
+    loop {
+        read_cpu_info(&mut source);
+        cpu_rating(&mut source);
+        thread::sleep(Duration::new(1,0));
+    }
 
     Ok(())
 }
