@@ -29,9 +29,9 @@ pub fn read_disk_info(read:&statvfs,source:&mut DataSource) -> Result<(), Box<dy
 
     let check_total_disk = u64::from_be_bytes(data_source[DISK_TOTAL_START..DISK_TOTAL_END].try_into()?);
     let check_avail_disk = u64::from_be_bytes(data_source[DISK_AVAIL_START..DISK_AVAIL_END].try_into()?);
-    println!("-----------");
-    println!("DISK TOTAL : {}, DISK AVAIL: {}", check_total_disk, check_avail_disk);
-    println!("-----------");
+    //println!("-----------");
+    //println!("DISK TOTAL : {}, DISK AVAIL: {}", check_total_disk, check_avail_disk);
+    //println!("-----------");
 
 
     Ok(())
