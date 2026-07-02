@@ -47,7 +47,7 @@ pub fn read_mem_info(source:&mut DataSource) -> Result<(), Box<dyn std::error::E
 
     let check_total_memory:u64 = u64::from_be_bytes(data_array[MEMORY_TOTAL_START..MEMORY_TOTAL_END].try_into()?);
     let check_avail_memory:u64 = u64::from_be_bytes(data_array[MEMORY_AVAIL_START..MEMORY_AVAIL_END].try_into()?);
-    println!("MEMORY TOTAL : {}, MEMORY AVAIL: {}", check_total_memory, &check_avail_memory);
+    //println!("MEMORY TOTAL : {}, MEMORY AVAIL: {}", check_total_memory, &check_avail_memory);
     Ok(())
 
 }

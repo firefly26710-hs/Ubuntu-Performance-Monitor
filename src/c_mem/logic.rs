@@ -3,7 +3,7 @@ use crate::c_mem::collection::{MEMORY_AVAIL_END, MEMORY_AVAIL_START, MEMORY_TOTA
 
 pub fn mem_rating(source:&mut DataSource){
     let data_source:&mut[u8; DATA_ARRAY_SIZE] = &mut source.data_array;
-    let history = &mut source.chart_array[0];
+    let gauge_array = &mut source.gauge_array;
 
     let total_slice: &[u8; HALF_PADDING_SIZE] = (&data_source[MEMORY_TOTAL_START..MEMORY_TOTAL_END]).try_into().unwrap();
     let avail_slice: &[u8; HALF_PADDING_SIZE] = (&data_source[MEMORY_AVAIL_START..MEMORY_AVAIL_END]).try_into().unwrap();
@@ -12,18 +12,11 @@ pub fn mem_rating(source:&mut DataSource){
     let avail_to_u64 = u64::from_be_bytes(*avail_slice);
 
     let total_mem = total_to_u64 as f64;
-    let used_mem = (total_to_u64 - avail_to_u64) as f64;
+    let avail_mem = avail_to_u64 as f64;
+    let used_mem = (total_mem - avail_mem).max(0.0);
 
-
-    //if total_mem > 0.0 {
-        let rating = ( used_mem / total_mem) * 100.0;
-
-        //history.copy_within(0..29, 1);
-        //history[0] = rating;
-
-        //println!("history[0]: {:.2}, history[1]: {:.2}, history[2]: {:.2}", history[0], history[1], history[2]);
-    //}
-
-
+    gauge_array[0] = total_mem;
+    gauge_array[1] = avail_mem;
+    gauge_array[2] = used_mem;
 
 }

@@ -25,7 +25,7 @@ use crate::b_cpu::present::draw_ui;
 
 use crate::c_mem::collection::read_mem_info;
 use crate::c_mem::logic::mem_rating;
-
+use crate::c_mem::present::mem_ui;
 use crate::d_gpu::collection::read_gpu_info;
 use crate::d_gpu::logic::gpu_rating;
 
@@ -47,9 +47,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
 
 
     loop {
-        read_cpu_info(&mut source);
-        cpu_rating(&mut source);
-        terminal.draw(|f| draw_ui(f, &mut source))?;
+        read_mem_info(&mut source);
+        mem_rating(&mut source);
+        terminal.draw(|f| mem_ui(f, &mut source))?;
         thread::sleep(Duration::new(1,0));
     }
 
