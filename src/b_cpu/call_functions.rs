@@ -10,5 +10,4 @@ pub fn cpu_call(f: &mut Frame, source: &mut DataSource){
     cpu_collection(source);
     cpu_logic(source);
     cpu_present(f, source);
-    thread::sleep(Duration::from_secs(1));
 }

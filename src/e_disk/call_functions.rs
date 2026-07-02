@@ -11,5 +11,5 @@ pub fn disk_call(f: &mut Frame,read:&statvfs, source: &mut DataSource){
     disk_collection(read,source);
     disk_logic(source);
     disk_present(f, source);
-    thread::sleep(Duration::from_secs(1));
+
 }

@@ -1,6 +1,6 @@
 use nvml_wrapper::Nvml;
 use crate::a_data_source::data::DataSource;
-use nix::libc::{intmax_t, statvfs};
+use nix::libc::statvfs;
 use crossterm::event::{self, Event, KeyCode};
 use std::time::Duration;
 
@@ -77,22 +77,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
     loop {
         ter.draw(|f| {
             match current_page {
-                MonitorPage::Cpu => {
-                    cpu_call(f, &mut source);
-                }
-                MonitorPage::Memory => {
-                    mem_call(f, &mut source);
-                }
-                MonitorPage::Gpu => {
-                    gpu_call(f, &nvml, &mut source);
-                }
-                MonitorPage::Disk => {
-                    disk_call(f, &read, &mut source);
-                }
+                MonitorPage::Cpu => { cpu_call(f, &mut source); }
+                MonitorPage::Memory => { mem_call(f, &mut source); }
+                MonitorPage::Gpu => { gpu_call(f, &nvml, &mut source); }
+                MonitorPage::Disk => { disk_call(f, &read, &mut source); }
             }
         })?;
 
-        if event::poll(Duration::from_nanos(1))? {
+        if event::poll(Duration::from_secs(1))? {
             if let Event::Key(key) = event::read()? {
                 match key.code {
                     KeyCode::Char('d') | KeyCode::Char('D') => {
@@ -110,6 +102,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
                 }
             }
         }
+
     }
     Ok(())
 }

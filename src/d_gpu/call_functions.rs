@@ -10,5 +10,5 @@ pub fn gpu_call(f: &mut Frame,nvml: &Nvml, source: &mut DataSource){
     gpu_collection(nvml, source);
     gpu_logic(source);
     gpu_present(f, source);
-    thread::sleep(Duration::from_secs(1));
+
 }

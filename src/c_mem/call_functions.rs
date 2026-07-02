@@ -10,5 +10,4 @@ pub fn mem_call(f: &mut Frame, source: &mut DataSource){
     mem_collection(source);
     mem_logic(source);
     mem_present(f, source);
-    thread::sleep(Duration::from_secs(1));
 }
