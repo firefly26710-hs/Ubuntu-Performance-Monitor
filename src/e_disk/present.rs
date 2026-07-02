@@ -8,17 +8,14 @@ use ratatui::widgets::Paragraph;
 use crate::a_data_source::data::DataSource;
 
 pub fn disk_present(f: &mut Frame, source: &mut DataSource) {
-    let total_kb = source.gauge_array[0];
-    let avail_kb = source.gauge_array[1];
-    let used_kb  = source.gauge_array[2];
+    let total = source.gauge_array[0];
+    let avail = source.gauge_array[1];
+    let used = source.gauge_array[2];
 
-    let total_gb = total_kb / 1024.0 / 1024.0 / 1024.0;
-    let avail_gb = avail_kb / 1024.0 / 1024.0 / 1024.0;
-    let used_gb  = used_kb / 1024.0 / 1024.0 / 1024.0;
 
     let total_ratio = 1.0;
-    let avail_ratio = if total_gb > 0.0 { (avail_gb / total_gb).clamp(0.0, 1.0) } else { 0.0 };
-    let used_ratio  = if total_gb > 0.0 { (used_gb / total_gb).clamp(0.0, 1.0) } else { 0.0 };
+    let avail_ratio = if total > 0.0 { (avail / total).clamp(0.0, 1.0) } else { 0.0 };
+    let used_ratio  = if total > 0.0 { (used / total).clamp(0.0, 1.0) } else { 0.0 };
 
     let ascii_art = r#"
 
@@ -51,19 +48,19 @@ pub fn disk_present(f: &mut Frame, source: &mut DataSource) {
         .block(Block::default().title(" Total Disk ").borders(Borders::ALL))
         .gauge_style(Style::default().fg(Color::Blue).bg(Color::Black))
         .ratio(total_ratio)
-        .label(format!("{:.1}G", total_gb));
+        .label(format!("{:.1}G", total));
 
     let avail_gauge = Gauge::default()
         .block(Block::default().title(" Available Disk ").borders(Borders::ALL))
         .gauge_style(Style::default().fg(Color::Green).bg(Color::Black))
         .ratio(avail_ratio)
-        .label(format!("{:.1}G", avail_gb));
+        .label(format!("{:.1}G", avail));
 
     let used_gauge = Gauge::default()
         .block(Block::default().title(" Used Disk ").borders(Borders::ALL))
         .gauge_style(Style::default().fg(Color::Yellow).bg(Color::Black))
         .ratio(used_ratio)
-        .label(format!("{:.1}G", used_gb));
+        .label(format!("{:.1}G", used));
 
     let ascii_paragraph = Paragraph::new(ascii_art)
         .style(Style::default().fg(Color::Green));

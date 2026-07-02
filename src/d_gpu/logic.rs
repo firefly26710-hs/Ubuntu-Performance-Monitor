@@ -13,7 +13,11 @@ pub fn gpu_logic(source:&mut DataSource){
 
     let total_vram = total_to_u64 as f64;
     let avail_vram = avail_to_u64 as f64;
-    let used_vram = (total_vram - avail_vram).max(0.0) as f64 ;
+    let used_vram = (total_vram - avail_vram).max(0.0);
+    
+    let total_vram = total_vram / 1024.0 / 1024.0 / 1024.0;
+    let avail_vram = avail_vram / 1024.0 / 1024.0 / 1024.0;
+    let used_vram = used_vram / 1024.0 / 1024.0 / 1024.0;
 
     gauge_array[0] = total_vram;
     gauge_array[1] = avail_vram;

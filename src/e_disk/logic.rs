@@ -14,6 +14,10 @@ pub fn disk_logic(source:&mut DataSource){
     let total_disk = total_to_u64 as f64;
     let avail_disk = avail_to_u64 as f64;
     let used_disk = (total_disk - avail_disk).max(0.0);
+    
+    let total_disk = total_disk / 1024.0 / 1024.0 / 1024.0;
+    let avail_disk = avail_disk / 1024.0 / 1024.0 / 1024.0;
+    let used_disk = used_disk / 1024.0 / 1024.0 / 1024.0;
 
     gauge_array[0] = total_disk;
     gauge_array[1] = avail_disk;
