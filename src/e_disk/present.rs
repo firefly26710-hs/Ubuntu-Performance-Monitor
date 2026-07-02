@@ -4,6 +4,7 @@ use ratatui::{
     layout::{Layout, Constraint, Direction},
     Frame,
 };
+use ratatui::widgets::Paragraph;
 use crate::a_data_source::data::DataSource;
 
 pub fn disk_present(f: &mut Frame, source: &mut DataSource) {
@@ -19,33 +20,62 @@ pub fn disk_present(f: &mut Frame, source: &mut DataSource) {
     let avail_ratio = if total_gb > 0.0 { (avail_gb / total_gb).clamp(0.0, 1.0) } else { 0.0 };
     let used_ratio  = if total_gb > 0.0 { (used_gb / total_gb).clamp(0.0, 1.0) } else { 0.0 };
 
-    // 2. 建立三根不同的 Gauge
+    let ascii_art = r#"
+
+
+               @@@@@@@@@@          @@@@@@@@@@
+        @@@@                                    @@@@
+     @@                                              @@
+     @                                                @
+     @  @@                                        @@@@@
+     @       @@@@                          @@@@@@@@@@@@
+     @                              +@@@@@@@@@@@@@@@@@@
+     @                                +@@@@@@@@@@@@@@@@
+     @                                +@@@@@@@@@@@@@@@@
+     @                                +@@@@@@@@@@@@@@@@
+     @ @@@                            +@@@@@@@    @@@ @
+     @ @    @@@@@                         @@@@@@@   @@@
+     @   @@@@@        @@@@@@@@@@@@@@@@         @@@@@@@@
+     @           @@ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+     @                                +@@@@@@@@@@@@@@@@
+     @                                +@@@@@@@@@@@@@@@@
+     @                                +@@@@@@@@@@@@@@@@
+     @@@                              +@@@@@@@@@@@ +@@@
+        @@@@@                                @@@@@   @
+              @@@@@@@@@@@@@@@@@@@@@@@@@@      @@@@@@
+
+
+    "#;
+
     let total_gauge = Gauge::default()
-        .block(Block::default().title(" Total Memory ").borders(Borders::ALL))
+        .block(Block::default().title(" Total Disk ").borders(Borders::ALL))
         .gauge_style(Style::default().fg(Color::Blue).bg(Color::Black))
         .ratio(total_ratio)
         .label(format!("{:.1}G", total_gb));
 
     let avail_gauge = Gauge::default()
-        .block(Block::default().title(" Available Memory ").borders(Borders::ALL))
+        .block(Block::default().title(" Available Disk ").borders(Borders::ALL))
         .gauge_style(Style::default().fg(Color::Green).bg(Color::Black))
         .ratio(avail_ratio)
         .label(format!("{:.1}G", avail_gb));
 
     let used_gauge = Gauge::default()
-        .block(Block::default().title(" Used Memory ").borders(Borders::ALL))
+        .block(Block::default().title(" Used Disk ").borders(Borders::ALL))
         .gauge_style(Style::default().fg(Color::Yellow).bg(Color::Black))
         .ratio(used_ratio)
         .label(format!("{:.1}G", used_gb));
 
-    // 3. 🎯 核心排版：把全螢幕高度切成三等分 (每根 Gauge 佔 3 行高度)
+    let ascii_paragraph = Paragraph::new(ascii_art)
+        .style(Style::default().fg(Color::Green));
+
+
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Length(3), // 第一根 Total
-            Constraint::Length(3), // 第二根 Avail
-            Constraint::Length(3), // 第三根 Used
-            //Constraint::Min(0),    // 剩餘留白
+            Constraint::Length(3),
+            Constraint::Length(3),
+            Constraint::Length(3),
+            Constraint::Min(0),
         ])
         .split(f.size());
 
@@ -53,4 +83,5 @@ pub fn disk_present(f: &mut Frame, source: &mut DataSource) {
     f.render_widget(total_gauge, chunks[0]);
     f.render_widget(avail_gauge, chunks[1]);
     f.render_widget(used_gauge, chunks[2]);
+    f.render_widget(ascii_paragraph, chunks[3]);
 }

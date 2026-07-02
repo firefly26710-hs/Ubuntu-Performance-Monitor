@@ -24,7 +24,7 @@ pub fn gpu_present(f: &mut Frame, source: &mut DataSource) {
     let gpu_name = raw_name.trim_matches(char::from(0)).trim();
     let cpu_information = format!("\n CPU NAME: {}\n ", gpu_name );
 
-    let rock_art = r#"
+    let ascii_art = r#"
 
 
 
@@ -43,30 +43,30 @@ pub fn gpu_present(f: &mut Frame, source: &mut DataSource) {
     "#;
 
     let total_gauge = Gauge::default()
-        .block(Block::default().title(" Total Memory ").borders(Borders::ALL))
+        .block(Block::default().title(" Total VRAM ").borders(Borders::ALL))
         .gauge_style(Style::default().fg(Color::Blue).bg(Color::Black))
         .ratio(total_ratio)
         .label(format!("{:.1}G", total_gb));
 
     let avail_gauge = Gauge::default()
-        .block(Block::default().title(" Available Memory ").borders(Borders::ALL))
+        .block(Block::default().title(" Available VRAM ").borders(Borders::ALL))
         .gauge_style(Style::default().fg(Color::Green).bg(Color::Black))
         .ratio(avail_ratio)
         .label(format!("{:.1}G", avail_gb));
 
     let used_gauge = Gauge::default()
-        .block(Block::default().title(" Used Memory ").borders(Borders::ALL))
+        .block(Block::default().title(" Used VRAM ").borders(Borders::ALL))
         .gauge_style(Style::default().fg(Color::Yellow).bg(Color::Black))
         .ratio(used_ratio)
         .label(format!("{:.1}G", used_gb));
 
     let gpu_paragraph = Paragraph::new(cpu_information)
-        .block(Block::default().title(" CPU Information ").borders(Borders::ALL))
+        .block(Block::default().title(" GPU Information ").borders(Borders::ALL))
         .style(Style::default().fg(Color::Green).add_modifier(Modifier::BOLD));
 
 
 
-    let ascii_paragraph = Paragraph::new(rock_art)
+    let ascii_paragraph = Paragraph::new(ascii_art)
         .style(Style::default().fg(Color::Green));
 
 
@@ -83,8 +83,8 @@ pub fn gpu_present(f: &mut Frame, source: &mut DataSource) {
     let bottom_chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([
-            Constraint::Percentage(40), // 左邊：GPU 資訊
-            Constraint::Percentage(60), // 右邊：ASCII 藝術
+            Constraint::Percentage(40),
+            Constraint::Percentage(60),
         ]).split(chunks[3]);
 
     // 4. 依序渲染上去，完美平行！
@@ -92,6 +92,6 @@ pub fn gpu_present(f: &mut Frame, source: &mut DataSource) {
     f.render_widget(avail_gauge, chunks[1]);
     f.render_widget(used_gauge, chunks[2]);
 
-    f.render_widget(gpu_paragraph, bottom_chunks[0]); // 左邊放 GPU
-    f.render_widget(ascii_paragraph, bottom_chunks[1]); // 右邊放 ASCII Art
+    f.render_widget(gpu_paragraph, bottom_chunks[0]);
+    f.render_widget(ascii_paragraph, bottom_chunks[1]);
 }

@@ -41,7 +41,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
 
     loop {
         terminal.draw(|f| {
-            gpu_call(f, &nvml, &mut source);
+            disk_call(f,&read, &mut source);
        })?;
     }
 
