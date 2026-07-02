@@ -1,7 +1,7 @@
 use crate::a_data_source::data::{DataSource, HALF_PADDING_SIZE, PADDING_SIZE};
 use crate::b_cpu::collection::THREAD_START;
 
-pub fn cpu_rating(source:&mut DataSource) {
+pub fn cpu_logic(source:&mut DataSource) {
     let data_array = &source.data_array;
     let prev_data_array = &mut source.prev_data_array;
     for (NUMBER, _) in data_array.chunks(PADDING_SIZE).enumerate(){

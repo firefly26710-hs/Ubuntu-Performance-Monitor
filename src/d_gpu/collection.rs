@@ -9,7 +9,7 @@ pub const VRAM_AVAIL_START:usize = HALF_PADDING_SIZE;
 pub const VRAM_AVAIL_END:usize = PADDING_SIZE;
 
 
-pub fn read_gpu_info(nvml: &Nvml,source: &mut DataSource)-> Result<(), NvmlError> {
+pub fn gpu_collection(nvml: &Nvml, source: &mut DataSource) -> Result<(), NvmlError> {
     let name_array = &mut source.name_array;
     let data_array = &mut source.data_array;
 

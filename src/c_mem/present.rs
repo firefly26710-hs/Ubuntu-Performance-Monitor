@@ -6,7 +6,7 @@ use ratatui::{
 };
 use crate::a_data_source::data::DataSource;
 
-pub fn mem_ui(f: &mut Frame, source: &mut DataSource) {
+pub fn mem_present(f: &mut Frame, source: &mut DataSource) {
     let total_kb = source.gauge_array[0];
     let avail_kb = source.gauge_array[1];
     let used_kb  = source.gauge_array[2];

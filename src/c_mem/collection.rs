@@ -8,8 +8,8 @@ pub const MEMORY_TOTAL_START:usize = 0;
 pub const MEMORY_TOTAL_END:usize = HALF_PADDING_SIZE;
 pub const MEMORY_AVAIL_START:usize = HALF_PADDING_SIZE;
 pub const MEMORY_AVAIL_END:usize = PADDING_SIZE;
-const U64_LEN:usize = 8;
-pub fn read_mem_info(source:&mut DataSource) -> Result<(), Box<dyn std::error::Error>>{
+
+pub fn mem_collection(source:&mut DataSource) -> Result<(), Box<dyn std::error::Error>>{
     let data_array = &mut source.data_array;
     
     let file = File::open(MEMORY_FILE)?;

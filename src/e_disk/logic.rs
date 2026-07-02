@@ -1,7 +1,7 @@
 use crate::a_data_source::data::{DataSource, HALF_PADDING_SIZE};
 use crate::e_disk::collection::{DISK_AVAIL_END, DISK_AVAIL_START, DISK_TOTAL_END, DISK_TOTAL_START};
 
-pub fn disk_rating(source:&mut DataSource){
+pub fn disk_logic(source:&mut DataSource){
     let data_source = &mut source.data_array;
     let gauge_array = &mut source.gauge_array;
 

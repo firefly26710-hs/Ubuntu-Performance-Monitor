@@ -11,7 +11,7 @@ pub const THREAD_START:usize = 0;
 pub const THREAD_NUMBER:usize = 12;
 
 
-pub fn read_cpu_info(source:&mut DataSource) -> Result<(), Box<dyn std::error::Error>>{
+pub fn cpu_collection(source:&mut DataSource) -> Result<(), Box<dyn std::error::Error>>{
     let name_array = &mut source.name_array;
     
     let mut file = File::open(NAME_FILE)?;

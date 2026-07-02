@@ -7,7 +7,7 @@ pub const DISK_TOTAL_END:usize = HALF_PADDING_SIZE;
 pub const DISK_AVAIL_START:usize = HALF_PADDING_SIZE;
 pub const DISK_AVAIL_END:usize = PADDING_SIZE;
 
-pub fn read_disk_info(read:&statvfs,source:&mut DataSource) -> Result<(), Box<dyn std::error::Error>> {
+pub fn disk_collection(read:&statvfs, source:&mut DataSource) -> Result<(), Box<dyn std::error::Error>> {
     let data_source = &mut source.data_array;
 
     

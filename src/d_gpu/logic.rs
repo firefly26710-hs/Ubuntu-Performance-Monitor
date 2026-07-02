@@ -1,7 +1,7 @@
 use crate::a_data_source::data::{DataSource, HALF_PADDING_SIZE};
 use crate::d_gpu::collection::{VRAM_AVAIL_END, VRAM_AVAIL_START, VRAM_TOTAL_END, VRAM_TOTAL_START};
 
-pub fn gpu_rating(source:&mut DataSource){
+pub fn gpu_logic(source:&mut DataSource){
     let data_source = &mut source.data_array;
     let gauge_array = &mut source.gauge_array;
 

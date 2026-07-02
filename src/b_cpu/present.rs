@@ -10,7 +10,7 @@ use crate::a_data_source::data::{DataSource};
 use crate::b_cpu::collection::THREAD_NUMBER;
 
 const CPU_LABELS: [&str; 12] = ["C0", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11"];
-pub fn draw_ui(f: &mut Frame, source: &mut DataSource) {
+pub fn cpu_present(f: &mut Frame, source: &mut DataSource) {
     let mut data: [(&str, u64); 12] = [("", 0); 12];
 
 
@@ -35,7 +35,7 @@ pub fn draw_ui(f: &mut Frame, source: &mut DataSource) {
     let cpu_paragraph = Paragraph::new(cpu_information)
         .block(Block::default().title(" CPU Information ").borders(Borders::ALL))
         .style(Style::default().fg(Color::Green).add_modifier(Modifier::BOLD));
-
+    
     let chunks = Layout::horizontal([
         Constraint::Percentage(60),
         Constraint::Percentage(40),

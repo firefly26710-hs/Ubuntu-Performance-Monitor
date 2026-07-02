@@ -1,7 +1,7 @@
 use crate::a_data_source::data::{DataSource, DATA_ARRAY_SIZE, HALF_PADDING_SIZE};
 use crate::c_mem::collection::{MEMORY_AVAIL_END, MEMORY_AVAIL_START, MEMORY_TOTAL_END, MEMORY_TOTAL_START};
 
-pub fn mem_rating(source:&mut DataSource){
+pub fn mem_logic(source:&mut DataSource){
     let data_source:&mut[u8; DATA_ARRAY_SIZE] = &mut source.data_array;
     let gauge_array = &mut source.gauge_array;
 
