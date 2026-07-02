@@ -17,18 +17,19 @@ pub fn read_cpu_info(source:&mut DataSource) -> Result<(), Box<dyn std::error::E
     
     let mut file = File::open(NAME_FILE)?;
     let mut reader = BufReader::new(file);
-    let raw_data = reader.lines().nth(4).ok_or("找不到 cpuinfo 的第 5 行")?.map_err(|e| e.to_string())?;
-    
-    let name =  raw_data.split(":").nth(1).ok_or("找不到Name")?;
+
+    let line = reader.lines().nth(4).expect("no line 4").expect("io error");
+    let name =  line.split(": ").nth(1).ok_or("找不到Name")?;
+
     let name_length = name.len().min(NAME_ARRAY_SIZE);
     let name_slice = name.as_bytes();
 
     name_array.fill(0);
     name_array[0..name_length].copy_from_slice(&name_slice[0..name_length]);
 
-    println!("-----------");
-    println!("{}", from_utf8(&name_array[0..name_length])?);
-    println!("-----------");
+    //println!("-----------");
+    //println!("{}", from_utf8(&name_array[0..name_length])?);
+    //println!("-----------");
 
 
 
@@ -68,9 +69,9 @@ pub fn read_cpu_info(source:&mut DataSource) -> Result<(), Box<dyn std::error::E
 
         let check_total= u64::from_be_bytes(data_array[start..start + len_total].try_into()?);
         let check_idle= u64::from_be_bytes(data_array[mid..mid+len_idle].try_into()?);
-        println!("-----------");
-        println!("Thread {} -> Total(前半): {}, Idle(後半): {}", number, check_total, check_idle);
-        println!("-----------");
+        //println!("-----------");
+        //println!("Thread {} -> Total(前半): {}, Idle(後半): {}", number, check_total, check_idle);
+        //println!("-----------");
     }
     Ok(())
 }

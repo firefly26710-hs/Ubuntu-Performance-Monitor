@@ -4,6 +4,14 @@ use std::thread;
 use std::time::Duration;
 use nix::libc::statvfs;
 
+use crossterm::{
+    terminal::{enable_raw_mode, EnterAlternateScreen},
+    ExecutableCommand,
+};
+use ratatui::{backend::CrosstermBackend, Terminal};
+use std::io::stdout;
+
+
 mod a_data_source;
 mod b_cpu;
 mod c_mem;
@@ -13,6 +21,7 @@ mod e_disk;
 
 use crate::b_cpu::collection::read_cpu_info;
 use crate::b_cpu::logic::cpu_rating;
+use crate::b_cpu::present::draw_ui;
 
 use crate::c_mem::collection::read_mem_info;
 use crate::c_mem::logic::mem_rating;
@@ -31,11 +40,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
     if unsafe { statvfs(c"/".as_ptr(), &mut read) } != 0 {
         return Err("statvfs syscall failed".into());
     }
+
+    enable_raw_mode()?;
+    let mut stdout = stdout();
+    stdout.execute(EnterAlternateScreen)?;
+    let mut terminal = Terminal::new(CrosstermBackend::new(stdout))?;
     loop {
         read_cpu_info(&mut source);
         cpu_rating(&mut source);
+        terminal.draw(|f| draw_ui(f, &mut source))?;
         thread::sleep(Duration::new(1,0));
     }
+
 
     Ok(())
 }

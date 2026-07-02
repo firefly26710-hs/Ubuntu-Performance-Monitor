@@ -40,7 +40,7 @@ pub fn cpu_rating(source:&mut DataSource) {
             let rating = (1.0 - (idle / total)) * 100.0;
             history.copy_within(0..29, 1);
             history[0] = rating;
-            println!("history[0]: {:.2}, history[1]: {:.2}, history[2]: {:.2}", history[0], history[1], history[2]);
+            //println!("history[0]: {:.2}, history[1]: {:.2}, history[2]: {:.2}", history[0], history[1], history[2]);
 
         }
 
