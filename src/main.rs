@@ -40,11 +40,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
     if unsafe { statvfs(c"/".as_ptr(), &mut read) } != 0 {
         return Err("statvfs syscall failed".into());
     }
-
     enable_raw_mode()?;
     let mut stdout = stdout();
     stdout.execute(EnterAlternateScreen)?;
     let mut terminal = Terminal::new(CrosstermBackend::new(stdout))?;
+
+
     loop {
         read_cpu_info(&mut source);
         cpu_rating(&mut source);

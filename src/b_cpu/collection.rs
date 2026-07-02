@@ -1,6 +1,5 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use std::str::from_utf8;
 
 use crate::a_data_source::data::{DataSource, HALF_PADDING_SIZE, NAME_ARRAY_SIZE, PADDING_SIZE};
 
@@ -19,7 +18,7 @@ pub fn read_cpu_info(source:&mut DataSource) -> Result<(), Box<dyn std::error::E
     let mut reader = BufReader::new(file);
 
     let line = reader.lines().nth(4).expect("no line 4").expect("io error");
-    let name =  line.split(": ").nth(1).ok_or("找不到Name")?;
+    let name =  line.split(": ").nth(1).ok_or("Can't find name")?;
 
     let name_length = name.len().min(NAME_ARRAY_SIZE);
     let name_slice = name.as_bytes();
@@ -75,6 +74,7 @@ pub fn read_cpu_info(source:&mut DataSource) -> Result<(), Box<dyn std::error::E
     }
     Ok(())
 }
+
 
 
 

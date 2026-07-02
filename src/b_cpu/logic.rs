@@ -5,7 +5,7 @@ pub fn cpu_rating(source:&mut DataSource) {
     let data_array = &source.data_array;
     let prev_data_array = &mut source.prev_data_array;
     for (NUMBER, _) in data_array.chunks(PADDING_SIZE).enumerate(){
-        let history = &mut source.history_array[NUMBER];
+        let history = &mut source.chart_array;
 
         let offest = NUMBER * PADDING_SIZE;
         let start = THREAD_START + offest;
@@ -38,8 +38,7 @@ pub fn cpu_rating(source:&mut DataSource) {
         if total > 0.0{
 
             let rating = (1.0 - (idle / total)) * 100.0;
-            history.copy_within(0..29, 1);
-            history[0] = rating;
+            history[NUMBER] = rating;
             //println!("history[0]: {:.2}, history[1]: {:.2}, history[2]: {:.2}", history[0], history[1], history[2]);
 
         }
