@@ -29,6 +29,7 @@ use crate::c_mem::present::mem_ui;
 
 use crate::d_gpu::collection::read_gpu_info;
 use crate::d_gpu::logic::gpu_rating;
+use crate::d_gpu::present::gpu_ui;
 
 use crate::e_disk::collection::read_disk_info;
 use crate::e_disk::logic::disk_rating;
@@ -48,12 +49,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
 
 
     loop {
-        read_disk_info(&read, &mut source);
+        read_disk_info(&read, &mut source)?;
         disk_rating(&mut source);
         terminal.draw(|f| {
-            // 這裡把 f 傳給你的 UI 函數
             disk_ui(f, &mut source);
-        })?;
+       })?;
     }
 
 

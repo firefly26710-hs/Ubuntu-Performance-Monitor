@@ -3,7 +3,7 @@ use crate::d_gpu::collection::{VRAM_AVAIL_END, VRAM_AVAIL_START, VRAM_TOTAL_END,
 
 pub fn gpu_rating(source:&mut DataSource){
     let data_source = &mut source.data_array;
-    let history = &mut source.chart_array[0];
+    let gauge_array = &mut source.gauge_array;
 
     let total_slice: &[u8; HALF_PADDING_SIZE] = (&data_source[VRAM_TOTAL_START..VRAM_TOTAL_END]).try_into().unwrap();
     let avail_slice: &[u8; HALF_PADDING_SIZE] = (&data_source[VRAM_AVAIL_START..VRAM_AVAIL_END]).try_into().unwrap();
@@ -12,15 +12,15 @@ pub fn gpu_rating(source:&mut DataSource){
     let avail_to_u64 = u64::from_be_bytes(*avail_slice);
 
     let total_vram = total_to_u64 as f64;
-    let used_vram = (total_to_u64 - avail_to_u64) as f64;
+    let avail_vram = avail_to_u64 as f64;
+    let used_vram = (total_vram - avail_vram).max(0.0) as f64 ;
 
-    //if total_vram > 0.0{
-        let rating = (used_vram / total_vram) * 100.0;
+    gauge_array[0] = total_vram;
+    gauge_array[1] = avail_vram;
+    gauge_array[2] = used_vram;
 
-        //history.copy_within(0..29, 1);
-        //history[0] = rating;
-        //println!("history[0]: {:.2}, history[1]: {:.2}, history[2]: {:.2}", history[0], history[1], history[2]);
-    //}
+    
+    //eprintln!("DEBUG: Total: {}, Avail: {}, Used: {}", gauge_array[0], gauge_array[1], gauge_array[2]);
 
 
 }

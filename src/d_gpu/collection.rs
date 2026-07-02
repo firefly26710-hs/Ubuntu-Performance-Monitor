@@ -3,8 +3,6 @@ use nvml_wrapper::Nvml;
 use nvml_wrapper::error::NvmlError;
 use crate::a_data_source::data::{DataSource, HALF_PADDING_SIZE, NAME_ARRAY_SIZE, PADDING_SIZE};
 
-const GPU_NAME_START:usize = 0;
-const GPU_NAME_END:usize = NAME_ARRAY_SIZE;
 pub const VRAM_TOTAL_START:usize = 0;
 pub const VRAM_TOTAL_END:usize = HALF_PADDING_SIZE;
 pub const VRAM_AVAIL_START:usize = HALF_PADDING_SIZE;
@@ -44,8 +42,8 @@ pub fn read_gpu_info(nvml: &Nvml,source: &mut DataSource)-> Result<(), NvmlError
     let check_vram_total = u64::from_be_bytes(data_array[VRAM_TOTAL_START..VRAM_TOTAL_END].try_into().unwrap());
     let check_vram_avail = u64::from_be_bytes(data_array[VRAM_AVAIL_START..VRAM_AVAIL_END].try_into().unwrap());
 
-    println!("-----------");
-    println!("GPU NAME : {}, VRAM TOTAL : {}, VRAM AVAIL : {}", check_gpu_name, check_vram_total, check_vram_avail);
-    println!("-----------");
+    //println!("-----------");
+    //println!("GPU NAME : {}, VRAM TOTAL : {}, VRAM AVAIL : {}", check_gpu_name, check_vram_total, check_vram_avail);
+    //println!("-----------");
     Ok(())
 }

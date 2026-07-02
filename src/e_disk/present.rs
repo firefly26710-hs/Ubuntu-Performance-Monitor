@@ -11,9 +11,9 @@ pub fn disk_ui(f: &mut Frame, source: &mut DataSource) {
     let avail_kb = source.gauge_array[1];
     let used_kb  = source.gauge_array[2];
 
-    let total_gb = total_kb / 1024.0 / 1024.0;
-    let avail_gb = avail_kb / 1024.0 / 1024.0;
-    let used_gb  = used_kb / 1024.0 / 1024.0;
+    let total_gb = total_kb / 1024.0 / 1024.0 / 1024.0;
+    let avail_gb = avail_kb / 1024.0 / 1024.0 / 1024.0;
+    let used_gb  = used_kb / 1024.0 / 1024.0 / 1024.0;
 
     let total_ratio = 1.0;
     let avail_ratio = if total_gb > 0.0 { (avail_gb / total_gb).clamp(0.0, 1.0) } else { 0.0 };
