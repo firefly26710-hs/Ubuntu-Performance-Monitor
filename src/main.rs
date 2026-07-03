@@ -53,9 +53,9 @@ impl MonitorPage{
 
 
 
-fn init()->(DataSource, Nvml, statvfs, Terminal<CrosstermBackend<Stdout>>) {
+fn init()->(DataSource, Nvml, statvfs, Terminal<CrosstermBackend<Stdout>>, usize) {
     enable_raw_mode().expect("Failed to enable raw mode");
-
+    let thread_number = thread_number();
     let mut stdout = stdout();
     stdout.execute(EnterAlternateScreen).expect("Failed to enter alt screen");
 
@@ -65,12 +65,15 @@ fn init()->(DataSource, Nvml, statvfs, Terminal<CrosstermBackend<Stdout>>) {
     unsafe { statvfs("/\0".as_ptr() as *const i8, &mut read); }
     let terminal = Terminal::new(CrosstermBackend::new(stdout)).expect("Failed to init Terminal");
 
-    ( source, nvml, read, terminal )
+    ( source, nvml, read, terminal, thread_number )
 
 }
+
+
 fn main() -> Result<(), Box<dyn std::error::Error>>{
-    let (mut source, nvml, read, mut ter) = init();
-    let thread_number = thread_number();
+    let (mut source, nvml, read,
+        mut ter,thread_number) = init();
+
     let mut current_page = MonitorPage::Cpu;
     ter.draw(|f| {
         cpu_call(f,&mut source, thread_number);
