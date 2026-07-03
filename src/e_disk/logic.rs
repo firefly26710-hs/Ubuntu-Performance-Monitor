@@ -1,5 +1,6 @@
+use nix::libc::statvfs;
 use crate::a_data_source::data::{DataSource, HALF_PADDING_SIZE};
-use crate::e_disk::collection::{DISK_AVAIL_END, DISK_AVAIL_START, DISK_TOTAL_END, DISK_TOTAL_START};
+use crate::e_disk::collection::{disk_collection, DISK_AVAIL_END, DISK_AVAIL_START, DISK_TOTAL_END, DISK_TOTAL_START};
 
 pub fn disk_logic(source:&mut DataSource){
     let data_source = &mut source.data_array;
@@ -24,4 +25,21 @@ pub fn disk_logic(source:&mut DataSource){
     gauge_array[2] = used_disk;
 
 
+}
+
+#[test]
+fn test_disk_logic(){
+    let mut source = DataSource::new();
+    let mut read: statvfs = unsafe { std::mem::zeroed() };
+    unsafe { statvfs("/\0".as_ptr() as *const i8, &mut read); }
+
+
+    disk_collection(&read,&mut source);
+    disk_logic(&mut source);
+    let gauge_array = &mut source.gauge_array;
+    let check_total_disk = gauge_array[0];
+    let check_avail_disk = gauge_array[1];
+    let check_used_disk = gauge_array[2];
+    eprintln!(" Disk Total : {:.2} , Disk Avail : {:.2}, Disk Used : {:.2} "
+              , check_total_disk, check_avail_disk, check_used_disk);
 }
