@@ -1,5 +1,8 @@
+use nvml_wrapper::error::NvmlError;
+use nvml_wrapper::Nvml;
 use crate::a_data_source::data::{DataSource, HALF_PADDING_SIZE};
-use crate::d_gpu::collection::{VRAM_AVAIL_END, VRAM_AVAIL_START, VRAM_TOTAL_END, VRAM_TOTAL_START};
+use crate::c_mem::logic::mem_logic;
+use crate::d_gpu::collection::{gpu_collection, VRAM_AVAIL_END, VRAM_AVAIL_START, VRAM_TOTAL_END, VRAM_TOTAL_START};
 
 pub fn gpu_logic(source:&mut DataSource){
     let data_source = &mut source.data_array;
@@ -27,4 +30,20 @@ pub fn gpu_logic(source:&mut DataSource){
     //eprintln!("DEBUG: Total: {}, Avail: {}, Used: {}", gauge_array[0], gauge_array[1], gauge_array[2]);
 
 
+}
+
+#[test]
+fn test_gpu_logic() -> Result<(), NvmlError>{
+    let mut source = DataSource::new();
+    let nvml = Nvml::init()?;
+    gpu_collection(&nvml, &mut source);
+    gpu_logic(&mut source);
+    let gauge_array = &mut source.gauge_array;
+    let check_total_vram = gauge_array[0];
+    let check_avail_vram = gauge_array[1];
+    let check_used_vram = gauge_array[2];
+    eprintln!(" Vram Total : {:.2} , Vram Avail : {:.2}, Vram Used : {:.2} "
+              , check_total_vram, check_avail_vram, check_used_vram);
+
+    Ok(())
 }

@@ -58,3 +58,5 @@ fn test_cpu_logic(){
         eprintln!("THREAD : {}, USAGE : {:.2}", number, data);
     }
 }
+
+

@@ -45,9 +45,17 @@ pub fn mem_collection(source:&mut DataSource) -> Result<(), Box<dyn std::error::
 
     }
 
-    let check_total_memory:u64 = u64::from_be_bytes(data_array[MEMORY_TOTAL_START..MEMORY_TOTAL_END].try_into()?);
-    let check_avail_memory:u64 = u64::from_be_bytes(data_array[MEMORY_AVAIL_START..MEMORY_AVAIL_END].try_into()?);
-    //println!("MEMORY TOTAL : {}, MEMORY AVAIL: {}", check_total_memory, &check_avail_memory);
+
     Ok(())
 
+}
+
+#[test]
+fn test_mem_collection(){
+    let mut source = DataSource::new();
+    mem_collection(&mut source);
+    let data_array = &mut source.data_array;
+    let check_total_memory:u64 = u64::from_be_bytes(data_array[MEMORY_TOTAL_START..MEMORY_TOTAL_END].try_into().unwrap());
+    let check_avail_memory:u64 = u64::from_be_bytes(data_array[MEMORY_AVAIL_START..MEMORY_AVAIL_END].try_into().unwrap());
+    eprintln!("Memory Total : {} , Memory Avail : {}", check_total_memory, check_avail_memory);
 }

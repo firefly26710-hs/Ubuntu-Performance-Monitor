@@ -1,5 +1,4 @@
-use std::thread;
-use std::time::Duration;
+
 use nvml_wrapper::Nvml;
 use ratatui::Frame;
 use crate::a_data_source::data::DataSource;

@@ -1,5 +1,5 @@
 use crate::a_data_source::data::{DataSource, DATA_ARRAY_SIZE, HALF_PADDING_SIZE};
-use crate::c_mem::collection::{MEMORY_AVAIL_END, MEMORY_AVAIL_START, MEMORY_TOTAL_END, MEMORY_TOTAL_START};
+use crate::c_mem::collection::{mem_collection, MEMORY_AVAIL_END, MEMORY_AVAIL_START, MEMORY_TOTAL_END, MEMORY_TOTAL_START};
 
 pub fn mem_logic(source:&mut DataSource){
     let data_source:&mut[u8; DATA_ARRAY_SIZE] = &mut source.data_array;
@@ -23,4 +23,17 @@ pub fn mem_logic(source:&mut DataSource){
     gauge_array[1] = avail_mem;
     gauge_array[2] = used_mem;
 
+}
+
+#[test]
+fn test_mem_logic(){
+    let mut source = DataSource::new();
+    mem_collection(&mut source);
+    mem_logic(&mut source);
+    let gauge_array = &mut source.gauge_array;
+    let check_total_memory = gauge_array[0];
+    let check_avail_memory = gauge_array[1];
+    let check_used_memory = gauge_array[2];
+    eprintln!(" Memory Total : {:.2} , Memory Avail : {:.2}, Memory Used : {:.2} "
+              , check_total_memory, check_avail_memory, check_used_memory);
 }
