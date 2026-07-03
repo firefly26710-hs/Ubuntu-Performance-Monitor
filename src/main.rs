@@ -12,7 +12,7 @@ use crossterm::{
 };
 use ratatui::{backend::CrosstermBackend, Terminal};
 use std::io::{stdout, Stdout};
-
+use crate::a_data_source::hpl::thread_number;
 
 mod a_data_source;
 mod b_cpu;
@@ -55,6 +55,7 @@ impl MonitorPage{
 
 fn init()->(DataSource, Nvml, statvfs, Terminal<CrosstermBackend<Stdout>>) {
     enable_raw_mode().expect("Failed to enable raw mode");
+
     let mut stdout = stdout();
     stdout.execute(EnterAlternateScreen).expect("Failed to enter alt screen");
 
@@ -69,9 +70,10 @@ fn init()->(DataSource, Nvml, statvfs, Terminal<CrosstermBackend<Stdout>>) {
 }
 fn main() -> Result<(), Box<dyn std::error::Error>>{
     let (mut source, nvml, read, mut ter) = init();
+    let thread_number = thread_number();
     let mut current_page = MonitorPage::Cpu;
     ter.draw(|f| {
-        cpu_call(f,&mut source);
+        cpu_call(f,&mut source, thread_number);
     })?;
 
 
@@ -79,7 +81,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
     loop {
         ter.draw(|f| {
             match current_page {
-                MonitorPage::Cpu => { cpu_call(f, &mut source); }
+                MonitorPage::Cpu => { cpu_call(f, &mut source, thread_number); }
                 MonitorPage::Memory => { mem_call(f, &mut source); }
                 MonitorPage::Gpu => { gpu_call(f, &nvml, &mut source); }
                 MonitorPage::Disk => { disk_call(f, &read, &mut source); }
