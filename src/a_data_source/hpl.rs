@@ -4,7 +4,7 @@ use crate::a_data_source::data::DataSource;
 use crate::b_cpu::collection::cpu_collection;
 use crate::b_cpu::logic::cpu_logic;
 
-fn thread_number() -> usize {
+pub fn thread_number() -> usize {
     let file = File::open("/proc/stat");
     let reader = BufReader::new(file.unwrap());
     let res = reader.lines().map(|l| l.unwrap()).
@@ -30,12 +30,11 @@ fn cpu_company(source: &DataSource) -> usize {
 
 #[test]
 fn test_hpl() {
+    let thread_number = thread_number();
     let source = &mut DataSource::new();
-    cpu_collection(source);
-    cpu_logic(source);
+    cpu_collection(source, thread_number);
+    cpu_logic(source, thread_number);
     cpu_company(source);
-    eprintln!("Is Thread Number is true? {}", thread_number() == 12);
+    eprintln!("Is Thread Number is true? {}", thread_number == 12);
     eprintln!("Is CPU Name is true? {}", cpu_company(source) == 2);
-
-
 }

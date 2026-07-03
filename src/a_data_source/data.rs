@@ -28,15 +28,15 @@
 
 
 pub const NAME_ARRAY_SIZE:usize = 64;
-pub const THREAD_NUMBER:usize = 64;
+pub const MAX_THREAD_NUMBER:usize = 64;
 pub const PADDING_SIZE:usize = 16;
 pub const HALF_PADDING_SIZE:usize = PADDING_SIZE / 2;
-pub const DATA_ARRAY_SIZE:usize = THREAD_NUMBER * PADDING_SIZE;
+pub const DATA_ARRAY_SIZE:usize = MAX_THREAD_NUMBER * PADDING_SIZE;
 pub struct DataSource{
     pub name_array:[u8; NAME_ARRAY_SIZE],
     pub data_array:[u8; DATA_ARRAY_SIZE],
     pub prev_data_array:[u8; DATA_ARRAY_SIZE],
-    pub chart_array:[f64; THREAD_NUMBER],
+    pub chart_array:[f64; MAX_THREAD_NUMBER],
     pub gauge_array:[f64;3]
 }
 
@@ -46,7 +46,7 @@ impl DataSource {
             name_array:[0u8; NAME_ARRAY_SIZE],
             data_array: [0u8; DATA_ARRAY_SIZE],
             prev_data_array:[0u8; DATA_ARRAY_SIZE],
-            chart_array:[0f64;THREAD_NUMBER],
+            chart_array:[0f64; MAX_THREAD_NUMBER],
             gauge_array:[0f64;3]
         }
     }

@@ -2,6 +2,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 
 use crate::a_data_source::data::{DataSource, HALF_PADDING_SIZE, NAME_ARRAY_SIZE, PADDING_SIZE};
+use crate::a_data_source::hpl::thread_number;
 
 const NAME_FILE:&str = "/proc/cpuinfo";
 const THREAD_FILE: &str = "/proc/stat";
@@ -11,7 +12,7 @@ pub const THREAD_START:usize = 0;
 pub const THREAD_NUMBER:usize = 12;
 
 
-pub fn cpu_collection(source:&mut DataSource) -> Result<(), Box<dyn std::error::Error>>{
+pub fn cpu_collection(source:&mut DataSource, thread_number:usize) -> Result<(), Box<dyn std::error::Error>>{
     let name_array = &mut source.name_array;
     
     let mut file = File::open(NAME_FILE)?;
@@ -26,24 +27,17 @@ pub fn cpu_collection(source:&mut DataSource) -> Result<(), Box<dyn std::error::
     name_array.fill(0);
     name_array[0..name_length].copy_from_slice(&name_slice[0..name_length]);
 
-    //println!("-----------");
-    //println!("{}", from_utf8(&name_array[0..name_length])?);
-    //println!("-----------");
-
-
 
     
     file = File::open(THREAD_FILE)?;
     reader = BufReader::new(file);
     let data_array = &mut source.data_array;
-    for (number, raw_datas) in reader.lines().skip(1).take(THREAD_NUMBER).enumerate() {
-        let raw_data = raw_datas?;
+    for (number, raw_data) in reader.lines().skip(1).take(thread_number).enumerate() {
+        let raw_data = raw_data?;
 
         let data = raw_data.split_whitespace().skip(1);
-
         let mut current_total: u64 = 0;
         let mut current_idle: u64 = 0;
-
         for(this_position, slice) in data.enumerate(){
             let val = slice.parse::<u64>()?;
             if this_position == IDLE_POSITION{ current_idle = val; }
@@ -68,11 +62,31 @@ pub fn cpu_collection(source:&mut DataSource) -> Result<(), Box<dyn std::error::
 
         let check_total= u64::from_be_bytes(data_array[start..start + len_total].try_into()?);
         let check_idle= u64::from_be_bytes(data_array[mid..mid+len_idle].try_into()?);
-        //println!("-----------");
-        //println!("Thread {} -> Total(前半): {}, Idle(後半): {}", number, check_total, check_idle);
-        //println!("-----------");
     }
     Ok(())
+}
+
+#[test]
+fn test_cpu_collection() {
+    let mut source = DataSource::new();
+    let thread_number = thread_number();
+    cpu_collection(&mut source, thread_number);
+    let raw_name = std::str::from_utf8(&source.name_array).unwrap_or("");
+    let cpu_name = raw_name.trim_matches(char::from(0)).trim();
+    eprintln!("CPU NAME : {}", cpu_name);
+
+
+    let data_array = source.data_array;
+    for (number, _) in data_array.chunks(PADDING_SIZE).take(thread_number).enumerate(){
+        let offest = number * PADDING_SIZE;
+        let start = THREAD_START + offest;
+        let end = start + PADDING_SIZE;
+        let mid = (start + end) / 2;
+        let check_total= u64::from_be_bytes(data_array[start..mid].try_into().unwrap());
+        let check_idle= u64::from_be_bytes(data_array[mid..end].try_into().unwrap());
+        eprintln!("THREAD : {} , TOTAL : {} , IDLE : {}", number, check_total, check_idle)
+    }
+
 }
 
 

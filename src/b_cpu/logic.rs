@@ -1,10 +1,11 @@
 use crate::a_data_source::data::{DataSource, HALF_PADDING_SIZE, PADDING_SIZE};
-use crate::b_cpu::collection::THREAD_START;
+use crate::a_data_source::hpl::thread_number;
+use crate::b_cpu::collection::{cpu_collection, THREAD_START};
 
-pub fn cpu_logic(source:&mut DataSource) {
+pub fn cpu_logic(source:&mut DataSource, thread_number:usize) {
     let data_array = &source.data_array;
     let prev_data_array = &mut source.prev_data_array;
-    for (NUMBER, _) in data_array.chunks(PADDING_SIZE).enumerate(){
+    for (NUMBER, _) in data_array.chunks(PADDING_SIZE).take(thread_number).enumerate(){
         let history = &mut source.chart_array;
 
         let offest = NUMBER * PADDING_SIZE;
@@ -43,5 +44,17 @@ pub fn cpu_logic(source:&mut DataSource) {
 
         }
 
+    }
+}
+
+#[test]
+fn test_cpu_logic(){
+    let mut source = DataSource::new();
+    let thread_number = thread_number();
+    cpu_collection(&mut source, thread_number);
+    cpu_logic(&mut source, thread_number);
+    let chart_array = source.chart_array;
+    for (number, data) in chart_array.iter().take(thread_number).enumerate(){
+        eprintln!("THREAD : {}, USAGE : {:.2}", number, data);
     }
 }

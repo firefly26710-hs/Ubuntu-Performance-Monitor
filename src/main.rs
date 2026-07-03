@@ -1,3 +1,5 @@
+extern crate core;
+
 use nvml_wrapper::Nvml;
 use crate::a_data_source::data::DataSource;
 use nix::libc::statvfs;
