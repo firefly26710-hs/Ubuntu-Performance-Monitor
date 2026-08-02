@@ -74,7 +74,7 @@ pub fn disk_present(f: &mut Frame, source: &mut DataSource) {
             Constraint::Length(3),
             Constraint::Min(0),
         ])
-        .split(f.size());
+        .split(f.area());
 
     // 4. 依序渲染上去，完美平行！
     f.render_widget(total_gauge, chunks[0]);

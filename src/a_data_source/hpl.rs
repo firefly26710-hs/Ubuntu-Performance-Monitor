@@ -5,36 +5,19 @@ use crate::b_cpu::collection::cpu_collection;
 use crate::b_cpu::logic::cpu_logic;
 
 pub fn thread_number() -> usize {
-    let file = File::open("/proc/stat");
-    let reader = BufReader::new(file.unwrap());
+    let file = File::open("/proc/stat").expect("Can't find file /proc/stat ");
+    let reader = BufReader::new(file);
     let res = reader.lines().map(|l| l.unwrap()).
         filter(|is| is.contains("cpu")).count();
 
     res - 1
 }
 
-fn cpu_company(source: &DataSource) -> usize {
-    let name_array = source.name_array;
-    let name = std::str::from_utf8(&name_array).unwrap().trim_matches(char::from(0)).trim();
-    let name = name.to_lowercase();
-
-    if name.contains("intel"){
-        1
-    } else if name.contains("amd") {
-        2
-    } else{
-        10
-    }
-
-}
-
 #[test]
-fn test_hpl() {
+fn test_hpl(){
     let thread_number = thread_number();
     let source = &mut DataSource::new();
     cpu_collection(source, thread_number);
     cpu_logic(source, thread_number);
-    cpu_company(source);
     eprintln!("Is Thread Number is true? {}", thread_number == 12);
-    eprintln!("Is CPU Name is true? {}", cpu_company(source) == 2);
 }

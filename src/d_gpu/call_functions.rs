@@ -6,7 +6,7 @@ use crate::d_gpu::collection::gpu_collection;
 use crate::d_gpu::logic::gpu_logic;
 use crate::d_gpu::present::gpu_present;
 pub fn gpu_call(f: &mut Frame,nvml: &Nvml, source: &mut DataSource){ 
-    gpu_collection(nvml, source);
+    gpu_collection(nvml, source).expect("Invalid gpu collection");
     gpu_logic(source);
     gpu_present(f, source);
 

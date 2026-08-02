@@ -1,7 +1,6 @@
 use nvml_wrapper::error::NvmlError;
 use nvml_wrapper::Nvml;
 use crate::a_data_source::data::{DataSource, HALF_PADDING_SIZE};
-use crate::c_mem::logic::mem_logic;
 use crate::d_gpu::collection::{gpu_collection, VRAM_AVAIL_END, VRAM_AVAIL_START, VRAM_TOTAL_END, VRAM_TOTAL_START};
 
 pub fn gpu_logic(source:&mut DataSource){
@@ -27,7 +26,6 @@ pub fn gpu_logic(source:&mut DataSource){
     gauge_array[2] = used_vram;
 
     
-    //eprintln!("DEBUG: Total: {}, Avail: {}, Used: {}", gauge_array[0], gauge_array[1], gauge_array[2]);
 
 
 }

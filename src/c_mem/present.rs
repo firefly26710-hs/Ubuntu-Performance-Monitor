@@ -64,7 +64,7 @@ pub fn mem_present(f: &mut Frame, source: &mut DataSource) {
             Constraint::Length(3),
             Constraint::Min(0)
         ])
-        .split(f.size());
+        .split(f.area());
 
     f.render_widget(total_gauge, chunks[0]);
     f.render_widget(avail_gauge, chunks[1]);

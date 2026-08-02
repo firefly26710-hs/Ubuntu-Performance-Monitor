@@ -32,6 +32,8 @@ pub const MAX_THREAD_NUMBER:usize = 64;
 pub const PADDING_SIZE:usize = 16;
 pub const HALF_PADDING_SIZE:usize = PADDING_SIZE / 2;
 pub const DATA_ARRAY_SIZE:usize = MAX_THREAD_NUMBER * PADDING_SIZE;
+
+
 pub struct DataSource{
     pub name_array:[u8; NAME_ARRAY_SIZE],
     pub data_array:[u8; DATA_ARRAY_SIZE],

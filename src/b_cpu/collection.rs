@@ -12,14 +12,14 @@ pub const THREAD_START:usize = 0;
 pub const THREAD_NUMBER:usize = 12;
 
 
-pub fn cpu_collection(source:&mut DataSource, thread_number:usize) -> Result<(), Box<dyn std::error::Error>>{
+pub fn cpu_collection(source:&mut DataSource, thread_number:usize){
     let name_array = &mut source.name_array;
     
-    let mut file = File::open(NAME_FILE)?;
+    let mut file = File::open(NAME_FILE).expect("Can't find /proc/cpuinfo");
     let mut reader = BufReader::new(file);
 
-    let line = reader.lines().nth(4).expect("no line 4").expect("io error");
-    let name =  line.split(": ").nth(1).ok_or("Can't find name")?;
+    let line_data = reader.lines().nth(4).expect("no line 4").expect("No File");
+    let name =  line_data.split(": ").nth(1).expect("Can't find CPU Name");
 
     let name_length = name.len().min(NAME_ARRAY_SIZE);
     let name_slice = name.as_bytes();
@@ -29,17 +29,17 @@ pub fn cpu_collection(source:&mut DataSource, thread_number:usize) -> Result<(),
 
 
     
-    file = File::open(THREAD_FILE)?;
+    file = File::open(THREAD_FILE).expect("Can't find ");
     reader = BufReader::new(file);
     let data_array = &mut source.data_array;
     for (number, raw_data) in reader.lines().skip(1).take(thread_number).enumerate() {
-        let raw_data = raw_data?;
+        let raw_data = raw_data.expect("Can't find this line data");
 
         let data = raw_data.split_whitespace().skip(1);
         let mut current_total: u64 = 0;
         let mut current_idle: u64 = 0;
         for(this_position, slice) in data.enumerate(){
-            let val = slice.parse::<u64>()?;
+            let val = slice.parse::<u64>().expect("Can change to u64");
             if this_position == IDLE_POSITION{ current_idle = val; }
             current_total+=val;
         }
@@ -58,12 +58,7 @@ pub fn cpu_collection(source:&mut DataSource, thread_number:usize) -> Result<(),
         data_array[start..end].fill(0);
         data_array[start..start + len_total].copy_from_slice(&total_slice);
         data_array[mid..mid + len_idle].copy_from_slice(&idle_slice);
-
-
-        let check_total= u64::from_be_bytes(data_array[start..start + len_total].try_into()?);
-        let check_idle= u64::from_be_bytes(data_array[mid..mid+len_idle].try_into()?);
     }
-    Ok(())
 }
 
 #[test]

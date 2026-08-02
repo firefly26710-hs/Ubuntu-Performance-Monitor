@@ -76,7 +76,7 @@ pub fn gpu_present(f: &mut Frame, source: &mut DataSource) {
             Constraint::Length(3),
             Constraint::Min(0),
         ])
-        .split(f.size());
+        .split(f.area());
 
     let bottom_chunks = Layout::default()
         .direction(Direction::Horizontal)

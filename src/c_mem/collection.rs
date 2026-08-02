@@ -9,13 +9,13 @@ pub const MEMORY_TOTAL_END:usize = HALF_PADDING_SIZE;
 pub const MEMORY_AVAIL_START:usize = HALF_PADDING_SIZE;
 pub const MEMORY_AVAIL_END:usize = PADDING_SIZE;
 
-pub fn mem_collection(source:&mut DataSource) -> Result<(), Box<dyn std::error::Error>>{
+pub fn mem_collection(source:&mut DataSource){
     let data_array = &mut source.data_array;
     
-    let file = File::open(MEMORY_FILE)?;
+    let file = File::open(MEMORY_FILE).expect("Can't find file /proc/meminfo");
     let reader = BufReader::new(file);
     for (this_info, line) in reader.lines().take(3).enumerate() {
-        let info = line?;
+        let info = line.expect("Can't find this line data");
         
         let mut data = info.split_whitespace().skip(1);
         let mut number:u64 = 0;
@@ -46,7 +46,6 @@ pub fn mem_collection(source:&mut DataSource) -> Result<(), Box<dyn std::error::
     }
 
 
-    Ok(())
 
 }
 

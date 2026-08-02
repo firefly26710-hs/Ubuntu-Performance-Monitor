@@ -6,7 +6,7 @@ pub const DISK_TOTAL_END:usize = HALF_PADDING_SIZE;
 pub const DISK_AVAIL_START:usize = HALF_PADDING_SIZE;
 pub const DISK_AVAIL_END:usize = PADDING_SIZE;
 
-pub fn disk_collection(read:&statvfs, source:&mut DataSource) -> Result<(), Box<dyn std::error::Error>> {
+pub fn disk_collection(read:&statvfs, source:&mut DataSource){
     let data_source = &mut source.data_array;
 
     
@@ -26,10 +26,6 @@ pub fn disk_collection(read:&statvfs, source:&mut DataSource) -> Result<(), Box<
     data_source[DISK_AVAIL_START..DISK_AVAIL_END].fill(0);
     data_source[DISK_AVAIL_START..DISK_AVAIL_END].copy_from_slice(&avail_slice);
 
-    
-
-
-    Ok(())
 }
 
 #[test]

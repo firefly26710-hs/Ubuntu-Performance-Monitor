@@ -1,5 +1,3 @@
-use std::thread;
-use std::time::Duration;
 use ratatui::Frame;
 use crate::a_data_source::data::DataSource;
 use crate::c_mem::collection::mem_collection;

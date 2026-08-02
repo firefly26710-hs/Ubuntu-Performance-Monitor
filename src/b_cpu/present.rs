@@ -56,7 +56,7 @@ pub fn cpu_present(f: &mut Frame, source: &mut DataSource, thread_number : usize
     let chunks = Layout::horizontal([
         Constraint::Percentage(65),
         Constraint::Percentage(35),
-    ]).split(f.size());
+    ]).split(f.area());
 
     let bottom_chunks = Layout::default()
         .direction(Direction::Vertical)

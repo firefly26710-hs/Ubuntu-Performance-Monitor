@@ -6,13 +6,9 @@ use nix::libc::statvfs;
 use crossterm::event::{self, Event, KeyCode};
 use std::time::Duration;
 
-use crossterm::{
-    terminal::{enable_raw_mode, EnterAlternateScreen},
-    ExecutableCommand,
-};
 use ratatui::{backend::CrosstermBackend, Terminal};
 use std::io::{stdout, Stdout};
-use crate::a_data_source::hpl::thread_number;
+use crossterm::{terminal::{enable_raw_mode, EnterAlternateScreen}, ExecutableCommand, };
 
 mod a_data_source;
 mod b_cpu;
@@ -20,6 +16,7 @@ mod c_mem;
 mod d_gpu;
 mod e_disk;
 
+use crate::a_data_source::hpl::thread_number;
 use crate::b_cpu::call_functions::cpu_call;
 use crate::c_mem::call_functions::mem_call;
 use crate::d_gpu::call_functions::gpu_call;
