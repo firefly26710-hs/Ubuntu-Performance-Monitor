@@ -39,7 +39,7 @@ Empirical micro-benchmarks executed using `Criterion` (100 samples per module). 
 | **`bench_gpu_module`** | **`47.795 µs`** | NVML C-FFI driver query via C boundary |
 | **`bench_mem_module`** | **`12.335 µs µs`** | Byte-scanning `/proc/meminfo` metrics |
 | **`bench_disk_module`** | **`1.3708 µs µs`** | Real `statvfs` Linux kernel syscall & buffer mapping |
-| **Full Telemetry Cycle** | **`~162.5608 µs`** | **End-to-end telemetry ingestion + delta logic** |
+| **`Full Telemetry Cycle`** | **`~162.5608 µs`** | **End-to-end telemetry ingestion + delta logic** |
 
 ---
 
