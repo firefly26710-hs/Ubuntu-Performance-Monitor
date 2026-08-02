@@ -1,1 +1,1 @@
-![architecture](./photo/ptl.drawio.png)
+![architecture]()
