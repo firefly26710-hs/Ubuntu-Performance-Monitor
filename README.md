@@ -35,7 +35,7 @@ Empirical micro-benchmarks executed using `Criterion` (100 samples per module). 
 
 | Benchmark Target | Latency | Primary Operation & Bottleneck |
 | :--- | :--- | :--- |
-| **`bench_cpu_module`** | **`101.06 µs`** | Parsing `/proc/stat` & `/proc/cpuinfo` for 16 threads |
+| **`bench_cpu_module`** | **`101.06 µs`** | Parsing `/proc/stat` & `/proc/cpuinfo` for 12 threads |
 | **`bench_gpu_module`** | **`47.795 µs`** | NVML C-FFI driver query via C boundary |
 | **`bench_mem_module`** | **`12.335 µs µs`** | Byte-scanning `/proc/meminfo` metrics |
 | **`bench_disk_module`** | **`1.3708 µs µs`** | Real `statvfs` Linux kernel syscall & buffer mapping |
