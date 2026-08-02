@@ -50,7 +50,7 @@ impl MonitorPage{
 
 
 
-fn init()->(DataSource, Nvml, statvfs, Terminal<CrosstermBackend<Stdout>>, usize) {
+pub fn init()->(DataSource, Nvml, statvfs, Terminal<CrosstermBackend<Stdout>>, usize) {
     enable_raw_mode().expect("Failed to enable raw mode");
     let thread_number = thread_number();
     let mut stdout = stdout();
