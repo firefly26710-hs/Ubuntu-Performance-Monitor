@@ -24,11 +24,11 @@
 
 ## Telemetry Ingestion & Processing Pipeline
 Experimental computer :
-     OS: Ubuntu 24.04.4 LTS (Noble Numbat) x86_64
-     CPU: AMD Ryzen 5 2600 (12) @ 3.40 GHz
-     GPU: NVIDIA GeForce GTX 1660 [Discrete]
-     Memory: 4.05 GiB / 15.56 GiB
-     Disk (/): 66.96 GiB / 456.35 GiB (15%) - ext4
+####    OS: Ubuntu 24.04.4 LTS (Noble Numbat) x86_64
+####    CPU: AMD Ryzen 5 2600 (12) @ 3.40 GHz
+####    GPU: NVIDIA GeForce GTX 1660 [Discrete]
+####    Memory: 4.05 GiB / 15.56 GiB
+####    Disk (/): 66.96 GiB / 456.35 GiB (15%) - ext4
 
      
 Empirical micro-benchmarks executed using `Criterion` (100 samples per module). The measurements capture the complete end-to-end execution cost, including Linux kernel sys-calls, C-FFI overhead, and in-memory delta calculations:
