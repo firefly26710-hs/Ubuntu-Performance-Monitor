@@ -40,7 +40,6 @@ pub fn cpu_logic(source:&mut DataSource, thread_number:usize) {
 
             let rating = (1.0 - (idle / total)) * 100.0;
             history[number] = rating;
-            //println!("history[0]: {:.2}, history[1]: {:.2}, history[2]: {:.2}", history[0], history[1], history[2]);
 
         }
 
