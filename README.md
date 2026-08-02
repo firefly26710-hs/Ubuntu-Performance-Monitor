@@ -13,4 +13,7 @@
 #### Designed a polymorphic shared memory architecture using a fixed-size byte array across all metric modules, maximizing memory reuse and minimizing footprint and explicit 16-byte memory alignment for CPU thread slots to ensure peak cache efficiency
 
 ### Logic Layer :
-####
+#### Processes hardware state transitions and computes real-time metric deltas (e.g., CPU usage rates via byte-slice conversions) directly within contiguous buffers, pumping calculated metrics straight to the chart arrays for the UI presentation layer
+
+### Present Layer :
+
