@@ -17,7 +17,7 @@
 #### Processes hardware state transitions and computes real-time metric deltas (e.g., CPU usage rates via byte-slice conversions) directly within contiguous buffers, pumping calculated metrics straight to the chart arrays for the UI presentation layer
 
 ### Present Layer :
-#### Built an event-driven, single-threaded loop (`event::poll` with 1s timeout) that fetches target hardware metrics on-demand based on UI interaction (`A`/`D` navigation, `Q` exit). Completely eliminates thread context-switching overhead, mutex contention, and data races while controlling sampling frequency
+#### Built an event-driven, single-threaded loop (`event::poll` with 1s timeout) that fetches target hardware metrics on-demand based on UI interaction (`A`/`D` navigation, `Q` exit). Significantly reduce the frequency of context switching for data extraction, completely eliminates thread context-switching overhead, mutex contention, and data races while controlling sampling frequency
 <br>
 <br>
 <br>
